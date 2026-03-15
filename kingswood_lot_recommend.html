@@ -106,7 +106,20 @@ body {
 @media (max-width: 560px) {
   .zone-grid, .saju-grid, .rank-row { grid-template-columns: 1fr; }
   .hd h1 { font-size: 16px; }
+  .page { padding: 12px 10px 32px; }
+  .card { padding: 12px 12px; }
+  .chips { gap: 5px; }
+  .chip { font-size: 11px; padding: 4px 10px; }
+  .pillar-row { gap: 4px; }
+  .pl-hanja { font-size: 17px; }
 }
+/* ─── 탭 모바일 스크롤 ──────────────────── */
+.tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; flex-wrap: nowrap; padding-bottom: 4px; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { white-space: nowrap; flex-shrink: 0; }
+/* ─── SVG 스크롤 래퍼 ───────────────────── */
+.svg-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.svg-scroll svg { min-width: 480px; }
 </style>
 </head>
 <body>
@@ -132,6 +145,7 @@ body {
     <button class="tab" onclick="show('saju')">사주분석</button>
     <button class="tab" onclick="show('guide')">집터 가이드</button>
     <button class="tab" onclick="show('overall')">단지 전체도</button>
+    <button class="tab" onclick="show('azone')">🏆 A구역 상세</button>
   </div>
 
   <!-- ======== 탭 1: 추천 지도 ======== -->
@@ -526,6 +540,263 @@ body {
     </div>
   </div>
 
+  <!-- ======== 탭 5: A구역 상세 ======== -->
+  <div id="tab-azone" class="panel">
+
+    <div style="padding:12px 14px;background:#EAF3DE;border-radius:10px;border:1px solid #A6C97D;margin-bottom:12px;font-size:13px;color:#1a1a1a;line-height:1.7;">
+      <strong style="color:#1a6b2e">A구역</strong>은 단지 내 <strong>북동 고지대</strong>로, 환산(현무)을 등지고 대청호(주작)를 바라보는 배산임수 조건 최상 구역입니다.<br>
+      아래 도면은 <b>약 17개 필지를 4열</b>로 재구성한 개략도이며, 동쪽(木기운)·고도·조망을 기준으로 필지별 별점을 세분화했습니다.
+    </div>
+
+    <!-- 평가 기준 -->
+    <div class="card">
+      <div class="card-title">필지별 평가 기준</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+        <div style="background:#EAF3DE;border-radius:8px;padding:10px">
+          <strong style="color:#27500A">가점 요소</strong>
+          <ul style="margin:6px 0 0 16px;color:#333;line-height:1.9">
+            <li>고도 높을수록 (환산 밀착)</li>
+            <li>동쪽·동남쪽 노출 클수록</li>
+            <li>대청호 직접 조망 가능</li>
+            <li>동쪽 코너 필지</li>
+          </ul>
+        </div>
+        <div style="background:#FAECE7;border-radius:8px;padding:10px">
+          <strong style="color:#993C1D">감점 요소</strong>
+          <ul style="margin:6px 0 0 16px;color:#333;line-height:1.9">
+            <li>서쪽 편향 (金기운 기신)</li>
+            <li>저지대·A구역 하단부</li>
+            <li>조망 가림 위치</li>
+            <li>도로 소음 인접</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 범례 -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;font-size:12px;align-items:center">
+      <div style="display:flex;align-items:center;gap:5px"><div style="width:14px;height:14px;background:#1a6b2e;border-radius:3px;flex-shrink:0"></div><strong>★★★★★ 최상급</strong></div>
+      <div style="display:flex;align-items:center;gap:5px"><div style="width:14px;height:14px;background:#2e7d32;border-radius:3px;flex-shrink:0"></div><strong>★★★★½ 상급+</strong></div>
+      <div style="display:flex;align-items:center;gap:5px"><div style="width:14px;height:14px;background:#4CAF50;border-radius:3px;flex-shrink:0"></div>★★★★ 상급</div>
+      <div style="display:flex;align-items:center;gap:5px"><div style="width:14px;height:14px;background:#8BC34A;border-radius:3px;flex-shrink:0"></div>★★★½ 중상급</div>
+      <span style="font-size:11px;color:#888;margin-left:4px">필지 클릭 → 상세 설명</span>
+    </div>
+
+    <!-- SVG 상세 도면 -->
+    <div class="card" style="padding:10px 8px">
+      <div class="svg-scroll">
+        <svg width="560" height="410" viewBox="0 0 560 410">
+          <!-- 배경 방향 띠 -->
+          <rect x="0" y="0" width="560" height="48" fill="#EAF3DE" opacity="0.7" rx="8"/>
+          <text x="280" y="20" text-anchor="middle" font-size="12" fill="#27500A" font-weight="700">↑ 北 — 환산 능선 (현무 ★★★★★)</text>
+          <text x="280" y="37" text-anchor="middle" font-size="10" fill="#3B6D11">높이 올라갈수록 고도 증가, 산세 밀착</text>
+
+          <rect x="0" y="358" width="560" height="52" fill="#E6F1FB" opacity="0.7" rx="8"/>
+          <text x="280" y="378" text-anchor="middle" font-size="12" fill="#185FA5" font-weight="700">↓ 南 — 대청호 (주작 ★★★★★)</text>
+          <text x="280" y="395" text-anchor="middle" font-size="10" fill="#185FA5">남향 필지일수록 水기운·조망 확보</text>
+
+          <!-- 동쪽 띠 -->
+          <rect x="487" y="48" width="73" height="310" fill="#EAF3DE" opacity="0.5"/>
+          <text x="523" y="205" text-anchor="middle" font-size="10" fill="#27500A" font-weight="700" transform="rotate(90,523,205)">東 木기운 직입 →</text>
+
+          <!-- 서쪽 띠 -->
+          <rect x="0" y="48" width="52" height="310" fill="#FFF3E0" opacity="0.5"/>
+          <text x="26" y="205" text-anchor="middle" font-size="10" fill="#BA7517" transform="rotate(-90,26,205)">← 서 金기운 주의</text>
+
+          <!-- ══════ 제1열 (최고도, y=55~115) ══════ -->
+          <!-- A-01: NE 코너 최상 -->
+          <g onclick="lotDetail('A-01')" style="cursor:pointer" transform="translate(397,55)">
+            <rect width="87" height="60" rx="5" fill="#1a6b2e" fill-opacity="0.88" stroke="#0d4a1e" stroke-width="1"/>
+            <rect width="87" height="60" rx="5" fill="white" fill-opacity="0" stroke="white" stroke-width="0" class="lot-hover"/>
+            <text x="43" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-01</text>
+            <text x="43" y="38" text-anchor="middle" font-size="10" fill="#c8f5d5">★★★★★</text>
+            <text x="43" y="52" text-anchor="middle" font-size="9" fill="#a0e8b8">최상급 · NE코너</text>
+          </g>
+          <!-- A-02 -->
+          <g onclick="lotDetail('A-02')" style="cursor:pointer" transform="translate(306,55)">
+            <rect width="87" height="60" rx="5" fill="#1a6b2e" fill-opacity="0.88" stroke="#0d4a1e" stroke-width="1"/>
+            <text x="43" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-02</text>
+            <text x="43" y="38" text-anchor="middle" font-size="10" fill="#c8f5d5">★★★★★</text>
+            <text x="43" y="52" text-anchor="middle" font-size="9" fill="#a0e8b8">최상급 · 고도최상</text>
+          </g>
+          <!-- A-03 -->
+          <g onclick="lotDetail('A-03')" style="cursor:pointer" transform="translate(215,55)">
+            <rect width="87" height="60" rx="5" fill="#2e7d32" fill-opacity="0.88" stroke="#1b5e20" stroke-width="1"/>
+            <text x="43" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-03</text>
+            <text x="43" y="38" text-anchor="middle" font-size="10" fill="#c8f5d5">★★★★½</text>
+            <text x="43" y="52" text-anchor="middle" font-size="9" fill="#b3e5b8">상급+ · 남향</text>
+          </g>
+          <!-- A-04 -->
+          <g onclick="lotDetail('A-04')" style="cursor:pointer" transform="translate(124,55)">
+            <rect width="87" height="60" rx="5" fill="#2e7d32" fill-opacity="0.88" stroke="#1b5e20" stroke-width="1"/>
+            <text x="43" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-04</text>
+            <text x="43" y="38" text-anchor="middle" font-size="10" fill="#c8f5d5">★★★★½</text>
+            <text x="43" y="52" text-anchor="middle" font-size="9" fill="#b3e5b8">상급+ · 고도최상</text>
+          </g>
+          <!-- A-05 -->
+          <g onclick="lotDetail('A-05')" style="cursor:pointer" transform="translate(54,55)">
+            <rect width="66" height="60" rx="5" fill="#4CAF50" fill-opacity="0.88" stroke="#388E3C" stroke-width="1"/>
+            <text x="33" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-05</text>
+            <text x="33" y="38" text-anchor="middle" font-size="10" fill="white">★★★★</text>
+            <text x="33" y="52" text-anchor="middle" font-size="9" fill="#e8f5e9">상급</text>
+          </g>
+          <!-- 제1열 라벨 -->
+          <text x="490" y="88" text-anchor="middle" font-size="9" fill="#666" transform="rotate(90,490,88)">제1열</text>
+
+          <!-- ══════ 제2열 (y=120~180) ══════ -->
+          <!-- A-06: 동쪽 코너 -->
+          <g onclick="lotDetail('A-06')" style="cursor:pointer" transform="translate(409,120)">
+            <rect width="75" height="60" rx="5" fill="#2e7d32" fill-opacity="0.88" stroke="#1b5e20" stroke-width="1"/>
+            <text x="37" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-06</text>
+            <text x="37" y="38" text-anchor="middle" font-size="10" fill="#c8f5d5">★★★★½</text>
+            <text x="37" y="52" text-anchor="middle" font-size="9" fill="#b3e5b8">상급+ · 동코너</text>
+          </g>
+          <!-- A-07 -->
+          <g onclick="lotDetail('A-07')" style="cursor:pointer" transform="translate(326,120)">
+            <rect width="80" height="60" rx="5" fill="#4CAF50" fill-opacity="0.88" stroke="#388E3C" stroke-width="1"/>
+            <text x="40" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-07</text>
+            <text x="40" y="38" text-anchor="middle" font-size="10" fill="white">★★★★</text>
+            <text x="40" y="52" text-anchor="middle" font-size="9" fill="#e8f5e9">상급</text>
+          </g>
+          <!-- A-08 -->
+          <g onclick="lotDetail('A-08')" style="cursor:pointer" transform="translate(242,120)">
+            <rect width="80" height="60" rx="5" fill="#4CAF50" fill-opacity="0.88" stroke="#388E3C" stroke-width="1"/>
+            <text x="40" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-08</text>
+            <text x="40" y="38" text-anchor="middle" font-size="10" fill="white">★★★★</text>
+            <text x="40" y="52" text-anchor="middle" font-size="9" fill="#e8f5e9">상급</text>
+          </g>
+          <!-- A-09 -->
+          <g onclick="lotDetail('A-09')" style="cursor:pointer" transform="translate(158,120)">
+            <rect width="80" height="60" rx="5" fill="#8BC34A" fill-opacity="0.88" stroke="#689F38" stroke-width="1"/>
+            <text x="40" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-09</text>
+            <text x="40" y="38" text-anchor="middle" font-size="10" fill="white">★★★½</text>
+            <text x="40" y="52" text-anchor="middle" font-size="9" fill="#f1f8e9">중상급</text>
+          </g>
+          <!-- A-10 -->
+          <g onclick="lotDetail('A-10')" style="cursor:pointer" transform="translate(54,120)">
+            <rect width="100" height="60" rx="5" fill="#8BC34A" fill-opacity="0.88" stroke="#689F38" stroke-width="1"/>
+            <text x="50" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-10</text>
+            <text x="50" y="38" text-anchor="middle" font-size="10" fill="white">★★★½</text>
+            <text x="50" y="52" text-anchor="middle" font-size="9" fill="#f1f8e9">중상급 · 서쪽주의</text>
+          </g>
+
+          <!-- ══════ 제3열 (y=185~245) ══════ -->
+          <!-- A-11: 동쪽 코너 -->
+          <g onclick="lotDetail('A-11')" style="cursor:pointer" transform="translate(420,185)">
+            <rect width="64" height="60" rx="5" fill="#4CAF50" fill-opacity="0.88" stroke="#388E3C" stroke-width="1"/>
+            <text x="32" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-11</text>
+            <text x="32" y="38" text-anchor="middle" font-size="10" fill="white">★★★★</text>
+            <text x="32" y="52" text-anchor="middle" font-size="9" fill="#e8f5e9">상급·동코너</text>
+          </g>
+          <!-- A-12 -->
+          <g onclick="lotDetail('A-12')" style="cursor:pointer" transform="translate(340,185)">
+            <rect width="76" height="60" rx="5" fill="#8BC34A" fill-opacity="0.88" stroke="#689F38" stroke-width="1"/>
+            <text x="38" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-12</text>
+            <text x="38" y="38" text-anchor="middle" font-size="10" fill="white">★★★½</text>
+            <text x="38" y="52" text-anchor="middle" font-size="9" fill="#f1f8e9">중상급</text>
+          </g>
+          <!-- A-13 -->
+          <g onclick="lotDetail('A-13')" style="cursor:pointer" transform="translate(258,185)">
+            <rect width="78" height="60" rx="5" fill="#8BC34A" fill-opacity="0.88" stroke="#689F38" stroke-width="1"/>
+            <text x="39" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-13</text>
+            <text x="39" y="38" text-anchor="middle" font-size="10" fill="white">★★★½</text>
+            <text x="39" y="52" text-anchor="middle" font-size="9" fill="#f1f8e9">중상급</text>
+          </g>
+          <!-- A-14 -->
+          <g onclick="lotDetail('A-14')" style="cursor:pointer" transform="translate(54,185)">
+            <rect width="200" height="60" rx="5" fill="#8BC34A" fill-opacity="0.88" stroke="#689F38" stroke-width="1"/>
+            <text x="100" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-14</text>
+            <text x="100" y="38" text-anchor="middle" font-size="10" fill="white">★★★½</text>
+            <text x="100" y="52" text-anchor="middle" font-size="9" fill="#f1f8e9">중상급 · 서쪽편향</text>
+          </g>
+
+          <!-- ══════ 제4열 A/B 경계 (y=250~310) ══════ -->
+          <!-- A-15: 동쪽 코너, 여전히 상급 -->
+          <g onclick="lotDetail('A-15')" style="cursor:pointer" transform="translate(420,250)">
+            <rect width="64" height="60" rx="5" fill="#4CAF50" fill-opacity="0.88" stroke="#388E3C" stroke-width="1"/>
+            <text x="32" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-15</text>
+            <text x="32" y="38" text-anchor="middle" font-size="10" fill="white">★★★★</text>
+            <text x="32" y="52" text-anchor="middle" font-size="9" fill="#e8f5e9">상급·동코너</text>
+          </g>
+          <!-- A-16 -->
+          <g onclick="lotDetail('A-16')" style="cursor:pointer" transform="translate(340,250)">
+            <rect width="76" height="60" rx="5" fill="#8BC34A" fill-opacity="0.88" stroke="#689F38" stroke-width="1"/>
+            <text x="38" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-16</text>
+            <text x="38" y="38" text-anchor="middle" font-size="10" fill="white">★★★½</text>
+            <text x="38" y="52" text-anchor="middle" font-size="9" fill="#f1f8e9">중상급</text>
+          </g>
+          <!-- A-17 -->
+          <g onclick="lotDetail('A-17')" style="cursor:pointer" transform="translate(258,250)">
+            <rect width="78" height="60" rx="5" fill="#8BC34A" fill-opacity="0.88" stroke="#689F38" stroke-width="1"/>
+            <text x="39" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-17</text>
+            <text x="39" y="38" text-anchor="middle" font-size="10" fill="white">★★★½</text>
+            <text x="39" y="52" text-anchor="middle" font-size="9" fill="#f1f8e9">중상급</text>
+          </g>
+          <!-- A/B 경계선 -->
+          <line x1="54" y1="318" x2="488" y2="318" stroke="#185FA5" stroke-width="1.2" stroke-dasharray="6 3"/>
+          <text x="280" y="334" text-anchor="middle" font-size="10" fill="#185FA5">— — — B구역 경계 (이하 B구역) — — —</text>
+        </svg>
+      </div>
+      <p style="font-size:11px;color:#aaa;margin-top:8px;padding:0 4px">* A-01~A-17은 풍수 분석을 위한 개략 구획 번호입니다. 실제 분양 필지 번호는 킹스우드 분양 자료를 확인하세요.</p>
+    </div>
+
+    <!-- 클릭 팝업 -->
+    <div id="lot-popup" style="display:none" class="card">
+      <div id="lot-popup-inner"></div>
+    </div>
+
+    <!-- TOP 5 -->
+    <div class="card">
+      <div class="card-title">A구역 추천 TOP 5</div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;font-size:12px;border-collapse:collapse;min-width:380px">
+          <thead>
+            <tr style="background:#f5f3ec;border-bottom:1px solid #e5e2d9">
+              <th style="padding:8px 8px;text-align:center;font-weight:600">순위</th>
+              <th style="padding:8px 8px;text-align:left;font-weight:600">필지</th>
+              <th style="padding:8px 8px;text-align:center;font-weight:600">평가</th>
+              <th style="padding:8px 8px;text-align:left;font-weight:600">핵심 이유</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:#EAF3DE;cursor:pointer" onclick="lotDetail('A-01')">
+              <td style="padding:8px;text-align:center;font-weight:700;color:#1a6b2e">1위</td>
+              <td style="padding:8px;font-weight:700;color:#1a6b2e">A-01</td>
+              <td style="padding:8px;text-align:center">★★★★★</td>
+              <td style="padding:8px;color:#27500A">NE코너 최고도 · 동남향 · 木水기운 동시 최대 흡수</td>
+            </tr>
+            <tr style="background:#EAF3DE;cursor:pointer" onclick="lotDetail('A-02')">
+              <td style="padding:8px;text-align:center;font-weight:700;color:#1a6b2e">2위</td>
+              <td style="padding:8px;font-weight:700;color:#1a6b2e">A-02</td>
+              <td style="padding:8px;text-align:center">★★★★★</td>
+              <td style="padding:8px;color:#27500A">제1열 동쪽 · 고도 최상 · 환산 밀착 · 조망 최상</td>
+            </tr>
+            <tr style="cursor:pointer" onclick="lotDetail('A-06')">
+              <td style="padding:8px;text-align:center;font-weight:600;color:#2e7d32">3위</td>
+              <td style="padding:8px;font-weight:600">A-06</td>
+              <td style="padding:8px;text-align:center">★★★★½</td>
+              <td style="padding:8px;color:#444">제2열 동쪽 코너 · 동쪽 완전 개방 · 木기운 직입</td>
+            </tr>
+            <tr style="background:#f5f3ec;cursor:pointer" onclick="lotDetail('A-03')">
+              <td style="padding:8px;text-align:center;font-weight:600;color:#2e7d32">4위</td>
+              <td style="padding:8px;font-weight:600">A-03</td>
+              <td style="padding:8px;text-align:center">★★★★½</td>
+              <td style="padding:8px;color:#444">제1열 중앙 · 고도 최상 · 남향 정남 · 대청호 조망</td>
+            </tr>
+            <tr style="cursor:pointer" onclick="lotDetail('A-04')">
+              <td style="padding:8px;text-align:center;font-weight:600;color:#2e7d32">5위</td>
+              <td style="padding:8px;font-weight:600">A-04</td>
+              <td style="padding:8px;text-align:center">★★★★½</td>
+              <td style="padding:8px;color:#444">제1열 · 고도 최상 · 환산 직배면 · 배산임수 정석</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:11px;color:#888;margin-top:8px;">* 표 행을 클릭하면 필지 상세 설명이 표시됩니다.</p>
+    </div>
+
+  </div><!-- tab-azone end -->
+
 </div>
 
 <script>
@@ -591,6 +862,103 @@ function showZone(key) {
   d.style.borderColor = z.bd;
   d.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
+
+// ─── A구역 상세 lot 데이터 ─────────────────────────────────────────
+const lotData = {
+  'A-01':{ s:'★★★★★', g:'최상급', c:'#1a6b2e', tc:'white',
+    title:'A-01 — 단지 최우선 명당',
+    body:`<b>제1열 최동쪽 코너 · 고도 최상 · 동남향</b><br>
+    북동쪽 현무(환산)와 완전 밀착, 동쪽 청룡에서 <b>木기운 직입</b>, 남쪽으로 대청호 水기운 최대 확보.
+    두 분 희용신 木·水를 동시에 최고 강도로 흡수할 수 있는 단지 내 <b>최고 명당</b>.
+    고지대 코너 필지라 일조·통풍·조망 모두 최상.` },
+  'A-02':{ s:'★★★★★', g:'최상급', c:'#1a6b2e', tc:'white',
+    title:'A-02 — 제1열 동쪽, 최고도',
+    body:`<b>제1열 동에서 2번째 · 최고 고도 · 동남향</b><br>
+    환산 능선 직배면으로 현무 기운 완벽 흡수. 동쪽 개방으로 木기운 직입.
+    대청호 조망 최상. A-01과 함께 단지 최상급 필지.` },
+  'A-03':{ s:'★★★★½', g:'상급+', c:'#2e7d32', tc:'white',
+    title:'A-03 — 제1열 중앙, 고도 최상',
+    body:`<b>제1열 중앙 · 고도 최상 · 남향</b><br>
+    배산임수 정석 조건. 동쪽 木기운 흡수가 A-01/02보다 약간 감소하나 환산 직배면 이점 그대로.
+    대청호 조망 우수. 안정적 최상급 필지.` },
+  'A-04':{ s:'★★★★½', g:'상급+', c:'#2e7d32', tc:'white',
+    title:'A-04 — 제1열, 고도 최상',
+    body:`<b>제1열 · 고도 최상 · 남향</b><br>
+    환산 직배면, 배산임수 조건 완벽. 동쪽 노출이 A-03보다 줄지만 고도 이점이 보완.
+    대청호 부분 조망. 상급+ 유지.` },
+  'A-05':{ s:'★★★★', g:'상급', c:'#4CAF50', tc:'white',
+    title:'A-05 — 제1열 서쪽 끝',
+    body:`<b>제1열 최서쪽 · 고도 최상 · 서쪽 기울기 시작</b><br>
+    고도는 최상이나 동쪽 木기운 흡수가 가장 제한됨. 서쪽 노출 증가로 金기운 소폭 가중.
+    동쪽 정원·나무 보완 권장. 상급 유지.` },
+  'A-06':{ s:'★★★★½', g:'상급+', c:'#2e7d32', tc:'white',
+    title:'A-06 — 제2열 동쪽 코너, 木기운 직입',
+    body:`<b>제2열 최동쪽 코너 · 고도 우수 · 동쪽 완전 개방</b><br>
+    1열보다 고도는 낮으나 동쪽 개방성이 탁월하여 木기운 직입 효과 최상.
+    동남향 노출 극대화. 아버지 丙火 일간에 특히 유리.` },
+  'A-07':{ s:'★★★★', g:'상급', c:'#4CAF50', tc:'white',
+    title:'A-07 — 제2열 동쪽',
+    body:`<b>제2열 동쪽 · 고도 우수 · 남향</b><br>
+    배산임수 조건 충족, 동쪽 木기운 양호. 안정적 상급 필지. 대청호 조망 가능.` },
+  'A-08':{ s:'★★★★', g:'상급', c:'#4CAF50', tc:'white',
+    title:'A-08 — 제2열 중앙',
+    body:`<b>제2열 중앙 · 고도 우수 · 남향</b><br>
+    균형 잡힌 배산임수. 동서 균등 노출. 특별한 강점은 없으나 모든 조건 안정적으로 충족.` },
+  'A-09':{ s:'★★★½', g:'중상급', c:'#8BC34A', tc:'#1a1a1a',
+    title:'A-09 — 제2열 중앙서쪽',
+    body:`<b>제2열 중앙서쪽 · 서쪽 金기운 시작</b><br>
+    남향 조건 유지. 다만 서쪽 편향 시작으로 金기운(기신) 소폭 가중. 동쪽 조경으로 보완 권장.` },
+  'A-10':{ s:'★★★½', g:'중상급', c:'#8BC34A', tc:'#1a1a1a',
+    title:'A-10 — 제2열 서쪽 끝',
+    body:`<b>제2열 최서쪽 · 서쪽 노출 증가</b><br>
+    西쪽 金기운 가중이 본격화되기 시작하는 위치. 동쪽 정원 조성 필수.
+    대청호 조망은 유지됨.` },
+  'A-11':{ s:'★★★★', g:'상급', c:'#4CAF50', tc:'white',
+    title:'A-11 — 제3열 동쪽 코너',
+    body:`<b>제3열 최동쪽 코너 · 동쪽 완전 개방</b><br>
+    고도는 낮아지나 동쪽 개방으로 木기운 직입 이점 유지. 어머니 己土 일간에 木관성 보충 효과.` },
+  'A-12':{ s:'★★★½', g:'중상급', c:'#8BC34A', tc:'#1a1a1a',
+    title:'A-12 — 제3열',
+    body:`<b>제3열 · 고도 보통 · 남향</b><br>
+    배산임수 기본 조건 충족. 고도 감소로 조망·산세 이점 약화. A구역 기준으로는 중상급.` },
+  'A-13':{ s:'★★★½', g:'중상급', c:'#8BC34A', tc:'#1a1a1a',
+    title:'A-13 — 제3열',
+    body:`<b>제3열 · 고도 보통 · 남향</b><br>
+    남향 배산임수 조건 충족. 동쪽 木기운 접근성 감소. 정원 동쪽 배치로 보완 가능.` },
+  'A-14':{ s:'★★★½', g:'중상급', c:'#8BC34A', tc:'#1a1a1a',
+    title:'A-14 — 제3열 서쪽',
+    body:`<b>제3열 서쪽 · 서쪽 편향 심화</b><br>
+    남향은 유지되나 서쪽 金기운 노출 증가. A구역 중에서는 상대적으로 열위. 동쪽 조경 필수.` },
+  'A-15':{ s:'★★★★', g:'상급', c:'#4CAF50', tc:'white',
+    title:'A-15 — 제4열 동쪽 코너 (A/B 경계)',
+    body:`<b>제4열 최동쪽 · A/B구역 경계 · 동쪽 개방</b><br>
+    고도가 낮아 B구역 경계이나, 동쪽 완전 개방으로 木기운 직입 이점 유지.
+    동쪽 전망 트인 코너 필지로 실거주 매력도 높음.` },
+  'A-16':{ s:'★★★½', g:'중상급', c:'#8BC34A', tc:'#1a1a1a',
+    title:'A-16 — 제4열 (A/B 경계)',
+    body:`<b>제4열 · A/B구역 경계</b><br>
+    배산임수 기본 조건은 충족. 고도·조망 열위로 중상급 분류. 가격 대비 실용성 우수.` },
+  'A-17':{ s:'★★★½', g:'중상급', c:'#8BC34A', tc:'#1a1a1a',
+    title:'A-17 — 제4열 서쪽 (A/B 경계)',
+    body:`<b>제4열 서쪽 · A/B구역 경계</b><br>
+    A구역 최하단. 南향 조건 유지. 고도·동쪽 노출 모두 열위. 동쪽 정원 필수 보완.` },
+};
+
+function lotDetail(id) {
+  const d = lotData[id];
+  const el = document.getElementById('lot-popup');
+  document.getElementById('lot-popup-inner').innerHTML =
+    `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+      <div style="background:${d.c};color:${d.tc};padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700">${d.s} ${d.g}</div>
+      <div style="font-size:14px;font-weight:700;color:#1a1a1a">${d.title}</div>
+     </div>
+     <div style="font-size:12px;color:#444;line-height:1.75">${d.body}</div>
+     <button onclick="document.getElementById('lot-popup').style.display='none'"
+       style="margin-top:10px;font-size:11px;padding:4px 12px;border:1px solid #ccc;border-radius:6px;cursor:pointer;background:#f5f3ec">닫기</button>`;
+  el.style.display = 'block';
+  el.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
 </script>
+
 </body>
 </html>
