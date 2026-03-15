@@ -46,13 +46,38 @@ body {
 }
 .card-title { font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 10px; }
 
-/* ─── 지도 래퍼 ──────────────────────────── */
-.map-wrap { position: relative; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 14px rgba(0,0,0,.14); margin-bottom: 12px; }
-.map-wrap img { width: 100%; display: block; }
-.map-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-/* zone polygon cursor */
-.map-svg polygon { cursor: pointer; transition: fill-opacity .2s; }
+/* ─── 줌맵 ──────────────────────────────── */
+.map-vp {
+  position: relative; border-radius: 12px; overflow: hidden;
+  box-shadow: 0 2px 14px rgba(0,0,0,.14); margin-bottom: 8px;
+  height: 420px; cursor: grab; touch-action: none; background:#e8e5dc;
+  user-select: none;
+}
+@media(max-width:560px){ .map-vp { height: 260px; } }
+.map-vp:active { cursor: grabbing; }
+.map-canvas {
+  position: absolute; top: 0; left: 0;
+  transform-origin: 0 0; width: 100%;
+}
+.map-canvas img { width: 100%; display: block; pointer-events: none; }
+.map-canvas .map-svg {
+  position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible;
+}
+.map-svg polygon { cursor: pointer; transition: fill-opacity .15s; }
 .map-svg polygon:hover { fill-opacity: 0.55 !important; }
+.zoom-bar {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;
+}
+.zm-btn {
+  width: 34px; height: 34px; border-radius: 8px;
+  border: 1px solid #d8d5cc; background: #fff;
+  font-size: 18px; cursor: pointer; display: flex;
+  align-items: center; justify-content: center;
+  line-height: 1; font-weight: 600; color: #333;
+}
+.zm-btn:active { background: #f0ede4; }
+.zm-pct { font-size: 12px; color: #666; min-width: 36px; }
+.zm-hint { font-size: 11px; color: #aaa; margin-left: 4px; }
 
 /* ─── 범례 ───────────────────────────────── */
 .legend { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
@@ -159,54 +184,72 @@ body {
       <div class="leg-item"><div class="leg-dot" style="background:#993C1D"></div><span><strong>X구역 ✗</strong> 비추천 — 서향 저지대</span></div>
     </div>
 
-    <!-- 2차단지 배치도 + 오버레이 -->
-    <div class="map-wrap" id="mapWrap">
-      <img src="2차단지 배치도.png" alt="킹스우드 2차단지 배치평면도" id="mapImg">
-      <svg class="map-svg" viewBox="0 0 100 100" preserveAspectRatio="none" id="mapSvg">
+    <!-- 줌 컨트롤 -->
+    <div class="zoom-bar">
+      <button class="zm-btn" onclick="zm(1.4)">＋</button>
+      <button class="zm-btn" onclick="zm(1/1.4)">－</button>
+      <button class="zm-btn" onclick="zmReset()" title="초기화" style="font-size:14px">⊙</button>
+      <span class="zm-pct" id="zmPct">100%</span>
+      <span class="zm-hint">🖱 휠 줌 · 드래그 이동 · 📱 핀치 줌 — 필지 번호 확인 가능</span>
+    </div>
 
-        <!-- ★★★★★ A구역: 북동 고지대 (이미지 우측 상단 호형 블록) -->
-        <polygon
-          points="58,6 92,6 92,10 96,14 96,48 88,52 60,52 56,46 54,28 56,15"
-          fill="#3B6D11" fill-opacity="0.28" stroke="#3B6D11" stroke-width="0.6"
-          onclick="showZone('a')" title="A구역 최우선 추천"/>
-        <text x="75" y="26" text-anchor="middle" font-size="4.8" fill="#1a4a06" font-weight="700" pointer-events="none">A구역</text>
-        <text x="75" y="33" text-anchor="middle" font-size="3.6" fill="#27500A" pointer-events="none">★★★★★ 최우선</text>
-        <text x="75" y="39" text-anchor="middle" font-size="3.2" fill="#27500A" pointer-events="none">북동 고지대·동남향</text>
+    <!-- 2차단지 배치도 + 오버레이 (줌 가능) -->
+    <div class="map-vp" id="mapVp">
+      <div class="map-canvas" id="mapCanvas">
+        <img src="2차단지 배치도.png" alt="킹스우드 2차단지 배치평면도" id="mapImg" draggable="false">
+        <!-- SVG 오버레이: viewBox는 이미지 로드 후 JS로 자동 설정 -->
+        <svg class="map-svg" id="mapSvg" viewBox="0 0 100 75" preserveAspectRatio="none">
 
-        <!-- ★★★★ B구역: 중앙 동쪽 남향 -->
-        <polygon
-          points="54,54 88,54 90,58 90,80 86,84 54,84 50,78 50,60"
-          fill="#185FA5" fill-opacity="0.22" stroke="#185FA5" stroke-width="0.5"
-          onclick="showZone('b')" title="B구역 차선 추천"/>
-        <text x="70" y="68" text-anchor="middle" font-size="4.5" fill="#0C447C" font-weight="700" pointer-events="none">B구역</text>
-        <text x="70" y="74" text-anchor="middle" font-size="3.4" fill="#185FA5" pointer-events="none">★★★★ 중앙 동쪽</text>
+          <!-- ★★★★★ A구역: 북동 고지대 -->
+          <polygon
+            points="57,6 78,6 79,8 80,9 80,12 79,13 80,14 80,44 79,46 77,47 57,47 55,45 53,36 53,20 55,10"
+            fill="#3B6D11" fill-opacity="0.28" stroke="#3B6D11" stroke-width="0.5"
+            onclick="showZone('a')"/>
+          <text x="67" y="19" text-anchor="middle" font-size="4.2" fill="#fff" font-weight="700"
+                paint-order="stroke" stroke="#1a4a06" stroke-width="1.5" pointer-events="none">A구역</text>
+          <text x="67" y="26" text-anchor="middle" font-size="3.2" fill="#fff" font-weight="600"
+                paint-order="stroke" stroke="#1a4a06" stroke-width="1.2" pointer-events="none">★★★★★ 최우선</text>
+          <text x="67" y="32" text-anchor="middle" font-size="2.8" fill="#c8f5d5"
+                paint-order="stroke" stroke="#1a4a06" stroke-width="1" pointer-events="none">북동 고지대·동남향</text>
 
-        <!-- ★★★ C구역: 중앙 서쪽 남향 -->
-        <polygon
-          points="14,50 48,50 48,84 14,84 10,76 10,56"
-          fill="#BA7517" fill-opacity="0.2" stroke="#BA7517" stroke-width="0.5"
-          onclick="showZone('c')" title="C구역 조건부"/>
-        <text x="29" y="65" text-anchor="middle" font-size="4.5" fill="#412402" font-weight="700" pointer-events="none">C구역</text>
-        <text x="29" y="71" text-anchor="middle" font-size="3.4" fill="#633806" pointer-events="none">★★★ 조건부 선택</text>
+          <!-- ★★★★ B구역: 중앙 동쪽 남향 -->
+          <polygon
+            points="53,49 79,49 80,51 80,70 79,71 57,71 55,70 52,65 52,52"
+            fill="#185FA5" fill-opacity="0.22" stroke="#185FA5" stroke-width="0.4"
+            onclick="showZone('b')"/>
+          <text x="66" y="59" text-anchor="middle" font-size="4" fill="#fff" font-weight="700"
+                paint-order="stroke" stroke="#0C447C" stroke-width="1.5" pointer-events="none">B구역</text>
+          <text x="66" y="65" text-anchor="middle" font-size="3" fill="#c8e8ff"
+                paint-order="stroke" stroke="#0C447C" stroke-width="1" pointer-events="none">★★★★ 중앙 동쪽</text>
 
-        <!-- X구역: 서쪽 저지대 -->
-        <polygon
-          points="4,8 52,8 54,24 48,48 10,48 4,38"
-          fill="#993C1D" fill-opacity="0.18" stroke="#993C1D" stroke-width="0.5"
-          onclick="showZone('x')" title="X구역 비추천"/>
-        <text x="27" y="28" text-anchor="middle" font-size="4.2" fill="#4A1B0C" font-weight="700" pointer-events="none">X구역</text>
-        <text x="27" y="34" text-anchor="middle" font-size="3.4" fill="#993C1D" pointer-events="none">✗ 회피</text>
+          <!-- ★★★ C구역: 중앙 서쪽 남향 -->
+          <polygon
+            points="12,46 49,46 50,48 50,71 12,71 10,68 10,50"
+            fill="#BA7517" fill-opacity="0.20" stroke="#BA7517" stroke-width="0.4"
+            onclick="showZone('c')"/>
+          <text x="30" y="57" text-anchor="middle" font-size="4" fill="#fff" font-weight="700"
+                paint-order="stroke" stroke="#633806" stroke-width="1.5" pointer-events="none">C구역</text>
+          <text x="30" y="63" text-anchor="middle" font-size="3" fill="#ffe5b0"
+                paint-order="stroke" stroke="#633806" stroke-width="1" pointer-events="none">★★★ 조건부</text>
 
-        <!-- 나침반 -->
-        <circle cx="5" cy="93" r="4.5" fill="rgba(255,255,255,0.85)" stroke="#ccc" stroke-width="0.3"/>
-        <line x1="5" y1="89.5" x2="5" y2="91.5" stroke="#E24B4A" stroke-width="0.8" stroke-linecap="round"/>
-        <line x1="5" y1="94.5" x2="5" y2="96.5" stroke="#999" stroke-width="0.6" stroke-linecap="round"/>
-        <line x1="1.5" y1="93" x2="3.5" y2="93" stroke="#999" stroke-width="0.6" stroke-linecap="round"/>
-        <line x1="6.5" y1="93" x2="8.5" y2="93" stroke="#999" stroke-width="0.6" stroke-linecap="round"/>
-        <polygon points="5,88.5 4.2,91.2 5.8,91.2" fill="#E24B4A"/>
-        <text x="5" y="88" text-anchor="middle" font-size="2.5" fill="#E24B4A" font-weight="700">N</text>
-        <text x="5" y="99" text-anchor="middle" font-size="2.5" fill="#999">S</text>
-      </svg>
+          <!-- X구역: 서쪽 저지대 -->
+          <polygon
+            points="4,7 50,7 52,18 50,44 12,44 10,42 4,34"
+            fill="#993C1D" fill-opacity="0.18" stroke="#993C1D" stroke-width="0.4"
+            onclick="showZone('x')"/>
+          <text x="27" y="23" text-anchor="middle" font-size="3.8" fill="#fff" font-weight="700"
+                paint-order="stroke" stroke="#4A1B0C" stroke-width="1.5" pointer-events="none">X구역</text>
+          <text x="27" y="29" text-anchor="middle" font-size="3" fill="#ffc4b0"
+                paint-order="stroke" stroke="#4A1B0C" stroke-width="1" pointer-events="none">✗ 비추천</text>
+
+          <!-- 나침반 -->
+          <circle cx="89" cy="68" r="5" fill="rgba(255,255,255,0.9)" stroke="#bbb" stroke-width="0.3"/>
+          <polygon points="89,63.5 88,66.5 90,66.5" fill="#E24B4A"/>
+          <line x1="89" y1="69.5" x2="89" y2="72.5" stroke="#bbb" stroke-width="0.6"/>
+          <text x="89" y="63" text-anchor="middle" font-size="2.4" fill="#E24B4A" font-weight="700">N</text>
+          <text x="89" y="74.5" text-anchor="middle" font-size="2.2" fill="#999">S</text>
+        </svg>
+      </div>
     </div>
 
     <!-- 클릭 시 상세 팝업 -->
@@ -806,6 +849,104 @@ function show(id) {
   document.getElementById('tab-' + id).classList.add('on');
   event.target.classList.add('on');
 }
+
+// ─── 팬·줌 ─────────────────────────────────────────────────────────
+(function(){
+  const vp = document.getElementById('mapVp');
+  const canvas = document.getElementById('mapCanvas');
+  if (!vp || !canvas) return;
+
+  let sc = 1, tx = 0, ty = 0;
+  let drag = false, sx = 0, sy = 0;
+  let lastDist = 0, lastMidX = 0, lastMidY = 0;
+
+  function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+
+  function clampPan(){
+    const vw = vp.offsetWidth, vh = vp.offsetHeight;
+    const cw = canvas.offsetWidth, ch = canvas.offsetHeight;
+    const maxTx = 0, minTx = Math.min(0, vw - cw * sc);
+    const maxTy = 0, minTy = Math.min(0, vh - ch * sc);
+    tx = clamp(tx, minTx, maxTx);
+    ty = clamp(ty, minTy, maxTy);
+  }
+
+  function apply(){
+    canvas.style.transform = `translate(${tx}px,${ty}px) scale(${sc})`;
+    document.getElementById('zmPct').textContent = Math.round(sc * 100) + '%';
+  }
+
+  function zoomAt(factor, cx, cy){
+    const ns = clamp(sc * factor, 1, 7);
+    tx = cx - (cx - tx) * (ns / sc);
+    ty = cy - (cy - ty) * (ns / sc);
+    sc = ns;
+    clampPan();
+    apply();
+  }
+
+  window.zm = factor => zoomAt(factor, vp.offsetWidth/2, vp.offsetHeight/2);
+  window.zmReset = () => { sc=1; tx=0; ty=0; apply(); };
+
+  // 마우스 휠
+  vp.addEventListener('wheel', e => {
+    e.preventDefault();
+    const r = vp.getBoundingClientRect();
+    zoomAt(e.deltaY < 0 ? 1.2 : 1/1.2, e.clientX - r.left, e.clientY - r.top);
+  }, { passive: false });
+
+  // 마우스 드래그
+  vp.addEventListener('mousedown', e => {
+    drag = true; sx = e.clientX - tx; sy = e.clientY - ty;
+    vp.style.cursor = 'grabbing';
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove', e => {
+    if (!drag) return;
+    tx = e.clientX - sx; ty = e.clientY - sy;
+    clampPan(); apply();
+  });
+  window.addEventListener('mouseup', () => { drag = false; vp.style.cursor = 'grab'; });
+
+  // 터치 드래그 & 핀치 줌
+  vp.addEventListener('touchstart', e => {
+    if (e.touches.length === 1) {
+      drag = true;
+      sx = e.touches[0].clientX - tx;
+      sy = e.touches[0].clientY - ty;
+    } else if (e.touches.length === 2) {
+      drag = false;
+      lastDist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY);
+      lastMidX = (e.touches[0].clientX + e.touches[1].clientX)/2 - vp.getBoundingClientRect().left;
+      lastMidY = (e.touches[0].clientY + e.touches[1].clientY)/2 - vp.getBoundingClientRect().top;
+    }
+  }, { passive: true });
+
+  vp.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if (e.touches.length === 1 && drag) {
+      tx = e.touches[0].clientX - sx;
+      ty = e.touches[0].clientY - sy;
+      clampPan(); apply();
+    } else if (e.touches.length === 2) {
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY);
+      const r = vp.getBoundingClientRect();
+      const midX = (e.touches[0].clientX + e.touches[1].clientX)/2 - r.left;
+      const midY = (e.touches[0].clientY + e.touches[1].clientY)/2 - r.top;
+      zoomAt(dist / lastDist, midX, midY);
+      lastDist = dist;
+    }
+  }, { passive: false });
+
+  vp.addEventListener('touchend', e => {
+    if (e.touches.length < 2) lastDist = 0;
+    if (e.touches.length === 0) drag = false;
+  });
+})();
 
 const zoneInfo = {
   a: {
