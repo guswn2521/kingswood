@@ -46,38 +46,17 @@ body {
 }
 .card-title { font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 10px; }
 
-/* ─── 줌맵 ──────────────────────────────── */
-.map-vp {
-  position: relative; border-radius: 12px; overflow: hidden;
-  box-shadow: 0 2px 14px rgba(0,0,0,.14); margin-bottom: 8px;
-  height: 420px; cursor: grab; touch-action: none; background:#e8e5dc;
-  user-select: none;
-}
-@media(max-width:560px){ .map-vp { height: 260px; } }
-.map-vp:active { cursor: grabbing; }
-.map-canvas {
-  position: absolute; top: 0; left: 0;
-  transform-origin: 0 0; width: 100%;
-}
-.map-canvas img { width: 100%; display: block; pointer-events: none; }
-.map-canvas .map-svg {
-  position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible;
-}
-.map-svg polygon { cursor: pointer; transition: fill-opacity .15s; }
+/* ─── 지도 래퍼 ──────────────────────────── */
+.map-wrap { position: relative; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 14px rgba(0,0,0,.14); margin-bottom: 12px; }
+.map-wrap img { width: 100%; display: block; }
+.map-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* zone polygon cursor */
+.map-svg polygon { cursor: pointer; transition: fill-opacity .2s; }
 .map-svg polygon:hover { fill-opacity: 0.55 !important; }
-.zoom-bar {
-  display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;
-}
-.zm-btn {
-  width: 34px; height: 34px; border-radius: 8px;
-  border: 1px solid #d8d5cc; background: #fff;
-  font-size: 18px; cursor: pointer; display: flex;
-  align-items: center; justify-content: center;
-  line-height: 1; font-weight: 600; color: #333;
-}
-.zm-btn:active { background: #f0ede4; }
-.zm-pct { font-size: 12px; color: #666; min-width: 36px; }
-.zm-hint { font-size: 11px; color: #aaa; margin-left: 4px; }
+/* ─── A구역 배치도 크롭 ──────────────────── */
+.azone-crop { position: relative; overflow: hidden; border-radius: 10px; height: 260px; background: #ddd; margin-bottom: 10px; }
+@media(max-width:560px){ .azone-crop { height: 180px; } }
+.azone-crop img { position: absolute; width: 230%; top: -8%; right: 18%; pointer-events: none; }
 
 /* ─── 범례 ───────────────────────────────── */
 .legend { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
@@ -184,72 +163,54 @@ body {
       <div class="leg-item"><div class="leg-dot" style="background:#993C1D"></div><span><strong>X구역 ✗</strong> 비추천 — 서향 저지대</span></div>
     </div>
 
-    <!-- 줌 컨트롤 -->
-    <div class="zoom-bar">
-      <button class="zm-btn" onclick="zm(1.4)">＋</button>
-      <button class="zm-btn" onclick="zm(1/1.4)">－</button>
-      <button class="zm-btn" onclick="zmReset()" title="초기화" style="font-size:14px">⊙</button>
-      <span class="zm-pct" id="zmPct">100%</span>
-      <span class="zm-hint">🖱 휠 줌 · 드래그 이동 · 📱 핀치 줌 — 필지 번호 확인 가능</span>
-    </div>
+    <!-- 2차단지 배치도 + 오버레이 -->
+    <div class="map-wrap" id="mapWrap">
+      <img src="2차단지 배치도.png" alt="킹스우드 2차단지 배치평면도" id="mapImg">
+      <svg class="map-svg" viewBox="0 0 100 100" preserveAspectRatio="none" id="mapSvg">
 
-    <!-- 2차단지 배치도 + 오버레이 (줌 가능) -->
-    <div class="map-vp" id="mapVp">
-      <div class="map-canvas" id="mapCanvas">
-        <img src="2차단지 배치도.png" alt="킹스우드 2차단지 배치평면도" id="mapImg" draggable="false">
-        <!-- SVG 오버레이: viewBox는 이미지 로드 후 JS로 자동 설정 -->
-        <svg class="map-svg" id="mapSvg" viewBox="0 0 100 75" preserveAspectRatio="none">
+        <!-- ★★★★★ A구역: 북동 고지대 (이미지 우측 상단 호형 블록) -->
+        <polygon
+          points="58,6 92,6 92,10 96,14 96,48 88,52 60,52 56,46 54,28 56,15"
+          fill="#3B6D11" fill-opacity="0.28" stroke="#3B6D11" stroke-width="0.6"
+          onclick="showZone('a')" title="A구역 최우선 추천"/>
+        <text x="75" y="26" text-anchor="middle" font-size="4.8" fill="#1a4a06" font-weight="700" pointer-events="none">A구역</text>
+        <text x="75" y="33" text-anchor="middle" font-size="3.6" fill="#27500A" pointer-events="none">★★★★★ 최우선</text>
+        <text x="75" y="39" text-anchor="middle" font-size="3.2" fill="#27500A" pointer-events="none">북동 고지대·동남향</text>
 
-          <!-- ★★★★★ A구역: 북동 고지대 -->
-          <polygon
-            points="57,6 78,6 79,8 80,9 80,12 79,13 80,14 80,44 79,46 77,47 57,47 55,45 53,36 53,20 55,10"
-            fill="#3B6D11" fill-opacity="0.28" stroke="#3B6D11" stroke-width="0.5"
-            onclick="showZone('a')"/>
-          <text x="67" y="19" text-anchor="middle" font-size="4.2" fill="#fff" font-weight="700"
-                paint-order="stroke" stroke="#1a4a06" stroke-width="1.5" pointer-events="none">A구역</text>
-          <text x="67" y="26" text-anchor="middle" font-size="3.2" fill="#fff" font-weight="600"
-                paint-order="stroke" stroke="#1a4a06" stroke-width="1.2" pointer-events="none">★★★★★ 최우선</text>
-          <text x="67" y="32" text-anchor="middle" font-size="2.8" fill="#c8f5d5"
-                paint-order="stroke" stroke="#1a4a06" stroke-width="1" pointer-events="none">북동 고지대·동남향</text>
+        <!-- ★★★★ B구역: 중앙 동쪽 남향 -->
+        <polygon
+          points="54,54 88,54 90,58 90,80 86,84 54,84 50,78 50,60"
+          fill="#185FA5" fill-opacity="0.22" stroke="#185FA5" stroke-width="0.5"
+          onclick="showZone('b')" title="B구역 차선 추천"/>
+        <text x="70" y="68" text-anchor="middle" font-size="4.5" fill="#0C447C" font-weight="700" pointer-events="none">B구역</text>
+        <text x="70" y="74" text-anchor="middle" font-size="3.4" fill="#185FA5" pointer-events="none">★★★★ 중앙 동쪽</text>
 
-          <!-- ★★★★ B구역: 중앙 동쪽 남향 -->
-          <polygon
-            points="53,49 79,49 80,51 80,70 79,71 57,71 55,70 52,65 52,52"
-            fill="#185FA5" fill-opacity="0.22" stroke="#185FA5" stroke-width="0.4"
-            onclick="showZone('b')"/>
-          <text x="66" y="59" text-anchor="middle" font-size="4" fill="#fff" font-weight="700"
-                paint-order="stroke" stroke="#0C447C" stroke-width="1.5" pointer-events="none">B구역</text>
-          <text x="66" y="65" text-anchor="middle" font-size="3" fill="#c8e8ff"
-                paint-order="stroke" stroke="#0C447C" stroke-width="1" pointer-events="none">★★★★ 중앙 동쪽</text>
+        <!-- ★★★ C구역: 중앙 서쪽 남향 -->
+        <polygon
+          points="14,50 48,50 48,84 14,84 10,76 10,56"
+          fill="#BA7517" fill-opacity="0.2" stroke="#BA7517" stroke-width="0.5"
+          onclick="showZone('c')" title="C구역 조건부"/>
+        <text x="29" y="65" text-anchor="middle" font-size="4.5" fill="#412402" font-weight="700" pointer-events="none">C구역</text>
+        <text x="29" y="71" text-anchor="middle" font-size="3.4" fill="#633806" pointer-events="none">★★★ 조건부 선택</text>
 
-          <!-- ★★★ C구역: 중앙 서쪽 남향 -->
-          <polygon
-            points="12,46 49,46 50,48 50,71 12,71 10,68 10,50"
-            fill="#BA7517" fill-opacity="0.20" stroke="#BA7517" stroke-width="0.4"
-            onclick="showZone('c')"/>
-          <text x="30" y="57" text-anchor="middle" font-size="4" fill="#fff" font-weight="700"
-                paint-order="stroke" stroke="#633806" stroke-width="1.5" pointer-events="none">C구역</text>
-          <text x="30" y="63" text-anchor="middle" font-size="3" fill="#ffe5b0"
-                paint-order="stroke" stroke="#633806" stroke-width="1" pointer-events="none">★★★ 조건부</text>
+        <!-- X구역: 서쪽 저지대 -->
+        <polygon
+          points="4,8 52,8 54,24 48,48 10,48 4,38"
+          fill="#993C1D" fill-opacity="0.18" stroke="#993C1D" stroke-width="0.5"
+          onclick="showZone('x')" title="X구역 비추천"/>
+        <text x="27" y="28" text-anchor="middle" font-size="4.2" fill="#4A1B0C" font-weight="700" pointer-events="none">X구역</text>
+        <text x="27" y="34" text-anchor="middle" font-size="3.4" fill="#993C1D" pointer-events="none">✗ 회피</text>
 
-          <!-- X구역: 서쪽 저지대 -->
-          <polygon
-            points="4,7 50,7 52,18 50,44 12,44 10,42 4,34"
-            fill="#993C1D" fill-opacity="0.18" stroke="#993C1D" stroke-width="0.4"
-            onclick="showZone('x')"/>
-          <text x="27" y="23" text-anchor="middle" font-size="3.8" fill="#fff" font-weight="700"
-                paint-order="stroke" stroke="#4A1B0C" stroke-width="1.5" pointer-events="none">X구역</text>
-          <text x="27" y="29" text-anchor="middle" font-size="3" fill="#ffc4b0"
-                paint-order="stroke" stroke="#4A1B0C" stroke-width="1" pointer-events="none">✗ 비추천</text>
-
-          <!-- 나침반 -->
-          <circle cx="89" cy="68" r="5" fill="rgba(255,255,255,0.9)" stroke="#bbb" stroke-width="0.3"/>
-          <polygon points="89,63.5 88,66.5 90,66.5" fill="#E24B4A"/>
-          <line x1="89" y1="69.5" x2="89" y2="72.5" stroke="#bbb" stroke-width="0.6"/>
-          <text x="89" y="63" text-anchor="middle" font-size="2.4" fill="#E24B4A" font-weight="700">N</text>
-          <text x="89" y="74.5" text-anchor="middle" font-size="2.2" fill="#999">S</text>
-        </svg>
-      </div>
+        <!-- 나침반 -->
+        <circle cx="5" cy="93" r="4.5" fill="rgba(255,255,255,0.85)" stroke="#ccc" stroke-width="0.3"/>
+        <line x1="5" y1="89.5" x2="5" y2="91.5" stroke="#E24B4A" stroke-width="0.8" stroke-linecap="round"/>
+        <line x1="5" y1="94.5" x2="5" y2="96.5" stroke="#999" stroke-width="0.6" stroke-linecap="round"/>
+        <line x1="1.5" y1="93" x2="3.5" y2="93" stroke="#999" stroke-width="0.6" stroke-linecap="round"/>
+        <line x1="6.5" y1="93" x2="8.5" y2="93" stroke="#999" stroke-width="0.6" stroke-linecap="round"/>
+        <polygon points="5,88.5 4.2,91.2 5.8,91.2" fill="#E24B4A"/>
+        <text x="5" y="88" text-anchor="middle" font-size="2.5" fill="#E24B4A" font-weight="700">N</text>
+        <text x="5" y="99" text-anchor="middle" font-size="2.5" fill="#999">S</text>
+      </svg>
     </div>
 
     <!-- 클릭 시 상세 팝업 -->
@@ -588,7 +549,19 @@ body {
 
     <div style="padding:12px 14px;background:#EAF3DE;border-radius:10px;border:1px solid #A6C97D;margin-bottom:12px;font-size:13px;color:#1a1a1a;line-height:1.7;">
       <strong style="color:#1a6b2e">A구역</strong>은 단지 내 <strong>북동 고지대</strong>로, 환산(현무)을 등지고 대청호(주작)를 바라보는 배산임수 조건 최상 구역입니다.<br>
-      아래 도면은 <b>약 17개 필지를 4열</b>로 재구성한 개략도이며, 동쪽(木기운)·고도·조망을 기준으로 필지별 별점을 세분화했습니다.
+      아래 <b>① 실제 배치도</b>에서 필지 번호를 확인하고, <b>② 개략 도면</b>에서 해당 위치의 별점 평가를 확인하세요.
+    </div>
+
+    <!-- ① 실제 배치도 — A구역 영역 확대 -->
+    <div class="card" style="padding:10px 10px 8px">
+      <div class="card-title" style="margin-bottom:8px">① 실제 배치도 — A구역 (단지 북동쪽 고지대)</div>
+      <div class="azone-crop">
+        <img src="2차단지 배치도.png" alt="A구역 실제 배치도">
+      </div>
+      <p style="font-size:11px;color:#666;margin-top:6px;line-height:1.6;">
+        위 이미지에서 <strong>우측 상단(북동쪽)</strong> 필지들이 A구역입니다. 각 필지 안에 인쇄된 번호가 <strong>실제 분양 필지번호</strong>입니다.<br>
+        아래 ② 개략 도면의 열(제1열~제4열) 위치와 비교해 해당 필지번호를 찾으세요.
+      </p>
     </div>
 
     <!-- 평가 기준 -->
@@ -625,10 +598,11 @@ body {
       <span style="font-size:11px;color:#888;margin-left:4px">필지 클릭 → 상세 설명</span>
     </div>
 
-    <!-- SVG 상세 도면 -->
+    <!-- ② 개략 도면 -->
     <div class="card" style="padding:10px 8px">
+      <div class="card-title" style="margin-bottom:8px">② 위치별 별점 개략 도면 <span style="font-size:11px;font-weight:400;color:#888">(클릭 → 상세 설명)</span></div>
       <div class="svg-scroll">
-        <svg width="560" height="410" viewBox="0 0 560 410">
+        <svg width="560" height="460" viewBox="0 0 560 460">
           <!-- 배경 방향 띠 -->
           <rect x="0" y="0" width="560" height="48" fill="#EAF3DE" opacity="0.7" rx="8"/>
           <text x="280" y="20" text-anchor="middle" font-size="12" fill="#27500A" font-weight="700">↑ 北 — 환산 능선 (현무 ★★★★★)</text>
@@ -649,135 +623,154 @@ body {
           <!-- ══════ 제1열 (최고도, y=55~115) ══════ -->
           <!-- A-01: NE 코너 최상 -->
           <g onclick="lotDetail('A-01')" style="cursor:pointer" transform="translate(397,55)">
-            <rect width="87" height="60" rx="5" fill="#1a6b2e" fill-opacity="0.88" stroke="#0d4a1e" stroke-width="1"/>
-            <rect width="87" height="60" rx="5" fill="white" fill-opacity="0" stroke="white" stroke-width="0" class="lot-hover"/>
-            <text x="43" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-01</text>
-            <text x="43" y="38" text-anchor="middle" font-size="10" fill="#c8f5d5">★★★★★</text>
-            <text x="43" y="52" text-anchor="middle" font-size="9" fill="#a0e8b8">최상급 · NE코너</text>
+            <rect width="87" height="68" rx="5" fill="#1a6b2e" fill-opacity="0.88" stroke="#0d4a1e" stroke-width="1"/>
+            <text x="43" y="20" text-anchor="middle" font-size="11" fill="white" font-weight="700">A-01</text>
+            <text x="43" y="34" text-anchor="middle" font-size="9.5" fill="#c8f5d5">★★★★★</text>
+            <text x="43" y="47" text-anchor="middle" font-size="8.5" fill="#a0e8b8">최상급 · NE코너</text>
+            <text x="43" y="60" text-anchor="middle" font-size="7.5" fill="#7dd8a8">↑배치도 번호 확인</text>
           </g>
           <!-- A-02 -->
           <g onclick="lotDetail('A-02')" style="cursor:pointer" transform="translate(306,55)">
-            <rect width="87" height="60" rx="5" fill="#1a6b2e" fill-opacity="0.88" stroke="#0d4a1e" stroke-width="1"/>
-            <text x="43" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-02</text>
-            <text x="43" y="38" text-anchor="middle" font-size="10" fill="#c8f5d5">★★★★★</text>
-            <text x="43" y="52" text-anchor="middle" font-size="9" fill="#a0e8b8">최상급 · 고도최상</text>
+            <rect width="87" height="68" rx="5" fill="#1a6b2e" fill-opacity="0.88" stroke="#0d4a1e" stroke-width="1"/>
+            <text x="43" y="20" text-anchor="middle" font-size="11" fill="white" font-weight="700">A-02</text>
+            <text x="43" y="34" text-anchor="middle" font-size="9.5" fill="#c8f5d5">★★★★★</text>
+            <text x="43" y="47" text-anchor="middle" font-size="8.5" fill="#a0e8b8">최상급 · 고도최상</text>
+            <text x="43" y="60" text-anchor="middle" font-size="7.5" fill="#7dd8a8">↑배치도 번호 확인</text>
           </g>
           <!-- A-03 -->
           <g onclick="lotDetail('A-03')" style="cursor:pointer" transform="translate(215,55)">
-            <rect width="87" height="60" rx="5" fill="#2e7d32" fill-opacity="0.88" stroke="#1b5e20" stroke-width="1"/>
-            <text x="43" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-03</text>
-            <text x="43" y="38" text-anchor="middle" font-size="10" fill="#c8f5d5">★★★★½</text>
-            <text x="43" y="52" text-anchor="middle" font-size="9" fill="#b3e5b8">상급+ · 남향</text>
+            <rect width="87" height="68" rx="5" fill="#2e7d32" fill-opacity="0.88" stroke="#1b5e20" stroke-width="1"/>
+            <text x="43" y="20" text-anchor="middle" font-size="11" fill="white" font-weight="700">A-03</text>
+            <text x="43" y="34" text-anchor="middle" font-size="9.5" fill="#c8f5d5">★★★★½</text>
+            <text x="43" y="47" text-anchor="middle" font-size="8.5" fill="#b3e5b8">상급+ · 남향</text>
+            <text x="43" y="60" text-anchor="middle" font-size="7.5" fill="#8fdc9a">↑배치도 번호 확인</text>
           </g>
           <!-- A-04 -->
           <g onclick="lotDetail('A-04')" style="cursor:pointer" transform="translate(124,55)">
-            <rect width="87" height="60" rx="5" fill="#2e7d32" fill-opacity="0.88" stroke="#1b5e20" stroke-width="1"/>
-            <text x="43" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-04</text>
-            <text x="43" y="38" text-anchor="middle" font-size="10" fill="#c8f5d5">★★★★½</text>
-            <text x="43" y="52" text-anchor="middle" font-size="9" fill="#b3e5b8">상급+ · 고도최상</text>
+            <rect width="87" height="68" rx="5" fill="#2e7d32" fill-opacity="0.88" stroke="#1b5e20" stroke-width="1"/>
+            <text x="43" y="20" text-anchor="middle" font-size="11" fill="white" font-weight="700">A-04</text>
+            <text x="43" y="34" text-anchor="middle" font-size="9.5" fill="#c8f5d5">★★★★½</text>
+            <text x="43" y="47" text-anchor="middle" font-size="8.5" fill="#b3e5b8">상급+ · 고도최상</text>
+            <text x="43" y="60" text-anchor="middle" font-size="7.5" fill="#8fdc9a">↑배치도 번호 확인</text>
           </g>
           <!-- A-05 -->
           <g onclick="lotDetail('A-05')" style="cursor:pointer" transform="translate(54,55)">
-            <rect width="66" height="60" rx="5" fill="#4CAF50" fill-opacity="0.88" stroke="#388E3C" stroke-width="1"/>
-            <text x="33" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-05</text>
-            <text x="33" y="38" text-anchor="middle" font-size="10" fill="white">★★★★</text>
-            <text x="33" y="52" text-anchor="middle" font-size="9" fill="#e8f5e9">상급</text>
+            <rect width="66" height="68" rx="5" fill="#4CAF50" fill-opacity="0.88" stroke="#388E3C" stroke-width="1"/>
+            <text x="33" y="20" text-anchor="middle" font-size="11" fill="white" font-weight="700">A-05</text>
+            <text x="33" y="34" text-anchor="middle" font-size="9.5" fill="white">★★★★</text>
+            <text x="33" y="47" text-anchor="middle" font-size="8.5" fill="#e8f5e9">상급</text>
+            <text x="33" y="60" text-anchor="middle" font-size="7.5" fill="#c8efc8">↑배치도 번호</text>
           </g>
           <!-- 제1열 라벨 -->
-          <text x="490" y="88" text-anchor="middle" font-size="9" fill="#666" transform="rotate(90,490,88)">제1열</text>
+          <text x="490" y="90" text-anchor="middle" font-size="9" fill="#555" font-weight="600" transform="rotate(90,490,90)">제1열 (최고도)</text>
 
-          <!-- ══════ 제2열 (y=120~180) ══════ -->
+          <!-- ══════ 제2열 (y=132~200) ══════ -->
           <!-- A-06: 동쪽 코너 -->
-          <g onclick="lotDetail('A-06')" style="cursor:pointer" transform="translate(409,120)">
-            <rect width="75" height="60" rx="5" fill="#2e7d32" fill-opacity="0.88" stroke="#1b5e20" stroke-width="1"/>
-            <text x="37" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-06</text>
-            <text x="37" y="38" text-anchor="middle" font-size="10" fill="#c8f5d5">★★★★½</text>
-            <text x="37" y="52" text-anchor="middle" font-size="9" fill="#b3e5b8">상급+ · 동코너</text>
+          <g onclick="lotDetail('A-06')" style="cursor:pointer" transform="translate(409,132)">
+            <rect width="75" height="68" rx="5" fill="#2e7d32" fill-opacity="0.88" stroke="#1b5e20" stroke-width="1"/>
+            <text x="37" y="20" text-anchor="middle" font-size="11" fill="white" font-weight="700">A-06</text>
+            <text x="37" y="34" text-anchor="middle" font-size="9.5" fill="#c8f5d5">★★★★½</text>
+            <text x="37" y="47" text-anchor="middle" font-size="8.5" fill="#b3e5b8">상급+ · 동코너</text>
+            <text x="37" y="60" text-anchor="middle" font-size="7.5" fill="#8fdc9a">↑배치도 번호 확인</text>
           </g>
           <!-- A-07 -->
-          <g onclick="lotDetail('A-07')" style="cursor:pointer" transform="translate(326,120)">
-            <rect width="80" height="60" rx="5" fill="#4CAF50" fill-opacity="0.88" stroke="#388E3C" stroke-width="1"/>
-            <text x="40" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-07</text>
-            <text x="40" y="38" text-anchor="middle" font-size="10" fill="white">★★★★</text>
-            <text x="40" y="52" text-anchor="middle" font-size="9" fill="#e8f5e9">상급</text>
+          <g onclick="lotDetail('A-07')" style="cursor:pointer" transform="translate(326,132)">
+            <rect width="80" height="68" rx="5" fill="#4CAF50" fill-opacity="0.88" stroke="#388E3C" stroke-width="1"/>
+            <text x="40" y="20" text-anchor="middle" font-size="11" fill="white" font-weight="700">A-07</text>
+            <text x="40" y="34" text-anchor="middle" font-size="9.5" fill="white">★★★★</text>
+            <text x="40" y="47" text-anchor="middle" font-size="8.5" fill="#e8f5e9">상급</text>
+            <text x="40" y="60" text-anchor="middle" font-size="7.5" fill="#c8efc8">↑배치도 번호 확인</text>
           </g>
           <!-- A-08 -->
-          <g onclick="lotDetail('A-08')" style="cursor:pointer" transform="translate(242,120)">
-            <rect width="80" height="60" rx="5" fill="#4CAF50" fill-opacity="0.88" stroke="#388E3C" stroke-width="1"/>
-            <text x="40" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-08</text>
-            <text x="40" y="38" text-anchor="middle" font-size="10" fill="white">★★★★</text>
-            <text x="40" y="52" text-anchor="middle" font-size="9" fill="#e8f5e9">상급</text>
+          <g onclick="lotDetail('A-08')" style="cursor:pointer" transform="translate(242,132)">
+            <rect width="80" height="68" rx="5" fill="#4CAF50" fill-opacity="0.88" stroke="#388E3C" stroke-width="1"/>
+            <text x="40" y="20" text-anchor="middle" font-size="11" fill="white" font-weight="700">A-08</text>
+            <text x="40" y="34" text-anchor="middle" font-size="9.5" fill="white">★★★★</text>
+            <text x="40" y="47" text-anchor="middle" font-size="8.5" fill="#e8f5e9">상급</text>
+            <text x="40" y="60" text-anchor="middle" font-size="7.5" fill="#c8efc8">↑배치도 번호 확인</text>
           </g>
           <!-- A-09 -->
-          <g onclick="lotDetail('A-09')" style="cursor:pointer" transform="translate(158,120)">
-            <rect width="80" height="60" rx="5" fill="#8BC34A" fill-opacity="0.88" stroke="#689F38" stroke-width="1"/>
-            <text x="40" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-09</text>
-            <text x="40" y="38" text-anchor="middle" font-size="10" fill="white">★★★½</text>
-            <text x="40" y="52" text-anchor="middle" font-size="9" fill="#f1f8e9">중상급</text>
+          <g onclick="lotDetail('A-09')" style="cursor:pointer" transform="translate(158,132)">
+            <rect width="80" height="68" rx="5" fill="#8BC34A" fill-opacity="0.88" stroke="#689F38" stroke-width="1"/>
+            <text x="40" y="20" text-anchor="middle" font-size="11" fill="white" font-weight="700">A-09</text>
+            <text x="40" y="34" text-anchor="middle" font-size="9.5" fill="white">★★★½</text>
+            <text x="40" y="47" text-anchor="middle" font-size="8.5" fill="#f1f8e9">중상급</text>
+            <text x="40" y="60" text-anchor="middle" font-size="7.5" fill="#daf0c8">↑배치도 번호 확인</text>
           </g>
           <!-- A-10 -->
-          <g onclick="lotDetail('A-10')" style="cursor:pointer" transform="translate(54,120)">
-            <rect width="100" height="60" rx="5" fill="#8BC34A" fill-opacity="0.88" stroke="#689F38" stroke-width="1"/>
-            <text x="50" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-10</text>
-            <text x="50" y="38" text-anchor="middle" font-size="10" fill="white">★★★½</text>
-            <text x="50" y="52" text-anchor="middle" font-size="9" fill="#f1f8e9">중상급 · 서쪽주의</text>
+          <g onclick="lotDetail('A-10')" style="cursor:pointer" transform="translate(54,132)">
+            <rect width="100" height="68" rx="5" fill="#8BC34A" fill-opacity="0.88" stroke="#689F38" stroke-width="1"/>
+            <text x="50" y="20" text-anchor="middle" font-size="11" fill="white" font-weight="700">A-10</text>
+            <text x="50" y="34" text-anchor="middle" font-size="9.5" fill="white">★★★½</text>
+            <text x="50" y="47" text-anchor="middle" font-size="8.5" fill="#f1f8e9">중상급·서쪽주의</text>
+            <text x="50" y="60" text-anchor="middle" font-size="7.5" fill="#daf0c8">↑배치도 번호 확인</text>
           </g>
+          <text x="490" y="168" text-anchor="middle" font-size="9" fill="#555" font-weight="600" transform="rotate(90,490,168)">제2열</text>
 
-          <!-- ══════ 제3열 (y=185~245) ══════ -->
+          <!-- ══════ 제3열 (y=209~277) ══════ -->
           <!-- A-11: 동쪽 코너 -->
-          <g onclick="lotDetail('A-11')" style="cursor:pointer" transform="translate(420,185)">
-            <rect width="64" height="60" rx="5" fill="#4CAF50" fill-opacity="0.88" stroke="#388E3C" stroke-width="1"/>
-            <text x="32" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-11</text>
-            <text x="32" y="38" text-anchor="middle" font-size="10" fill="white">★★★★</text>
-            <text x="32" y="52" text-anchor="middle" font-size="9" fill="#e8f5e9">상급·동코너</text>
+          <g onclick="lotDetail('A-11')" style="cursor:pointer" transform="translate(420,209)">
+            <rect width="64" height="68" rx="5" fill="#4CAF50" fill-opacity="0.88" stroke="#388E3C" stroke-width="1"/>
+            <text x="32" y="20" text-anchor="middle" font-size="11" fill="white" font-weight="700">A-11</text>
+            <text x="32" y="34" text-anchor="middle" font-size="9.5" fill="white">★★★★</text>
+            <text x="32" y="47" text-anchor="middle" font-size="8.5" fill="#e8f5e9">상급·동코너</text>
+            <text x="32" y="60" text-anchor="middle" font-size="7.5" fill="#c8efc8">↑배치도 번호</text>
           </g>
           <!-- A-12 -->
-          <g onclick="lotDetail('A-12')" style="cursor:pointer" transform="translate(340,185)">
-            <rect width="76" height="60" rx="5" fill="#8BC34A" fill-opacity="0.88" stroke="#689F38" stroke-width="1"/>
-            <text x="38" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-12</text>
-            <text x="38" y="38" text-anchor="middle" font-size="10" fill="white">★★★½</text>
-            <text x="38" y="52" text-anchor="middle" font-size="9" fill="#f1f8e9">중상급</text>
+          <g onclick="lotDetail('A-12')" style="cursor:pointer" transform="translate(340,209)">
+            <rect width="76" height="68" rx="5" fill="#8BC34A" fill-opacity="0.88" stroke="#689F38" stroke-width="1"/>
+            <text x="38" y="20" text-anchor="middle" font-size="11" fill="white" font-weight="700">A-12</text>
+            <text x="38" y="34" text-anchor="middle" font-size="9.5" fill="white">★★★½</text>
+            <text x="38" y="47" text-anchor="middle" font-size="8.5" fill="#f1f8e9">중상급</text>
+            <text x="38" y="60" text-anchor="middle" font-size="7.5" fill="#daf0c8">↑배치도 번호 확인</text>
           </g>
           <!-- A-13 -->
-          <g onclick="lotDetail('A-13')" style="cursor:pointer" transform="translate(258,185)">
-            <rect width="78" height="60" rx="5" fill="#8BC34A" fill-opacity="0.88" stroke="#689F38" stroke-width="1"/>
-            <text x="39" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-13</text>
-            <text x="39" y="38" text-anchor="middle" font-size="10" fill="white">★★★½</text>
-            <text x="39" y="52" text-anchor="middle" font-size="9" fill="#f1f8e9">중상급</text>
+          <g onclick="lotDetail('A-13')" style="cursor:pointer" transform="translate(258,209)">
+            <rect width="78" height="68" rx="5" fill="#8BC34A" fill-opacity="0.88" stroke="#689F38" stroke-width="1"/>
+            <text x="39" y="20" text-anchor="middle" font-size="11" fill="white" font-weight="700">A-13</text>
+            <text x="39" y="34" text-anchor="middle" font-size="9.5" fill="white">★★★½</text>
+            <text x="39" y="47" text-anchor="middle" font-size="8.5" fill="#f1f8e9">중상급</text>
+            <text x="39" y="60" text-anchor="middle" font-size="7.5" fill="#daf0c8">↑배치도 번호 확인</text>
           </g>
           <!-- A-14 -->
-          <g onclick="lotDetail('A-14')" style="cursor:pointer" transform="translate(54,185)">
-            <rect width="200" height="60" rx="5" fill="#8BC34A" fill-opacity="0.88" stroke="#689F38" stroke-width="1"/>
-            <text x="100" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-14</text>
-            <text x="100" y="38" text-anchor="middle" font-size="10" fill="white">★★★½</text>
-            <text x="100" y="52" text-anchor="middle" font-size="9" fill="#f1f8e9">중상급 · 서쪽편향</text>
+          <g onclick="lotDetail('A-14')" style="cursor:pointer" transform="translate(54,209)">
+            <rect width="200" height="68" rx="5" fill="#8BC34A" fill-opacity="0.88" stroke="#689F38" stroke-width="1"/>
+            <text x="100" y="20" text-anchor="middle" font-size="11" fill="white" font-weight="700">A-14</text>
+            <text x="100" y="34" text-anchor="middle" font-size="9.5" fill="white">★★★½</text>
+            <text x="100" y="47" text-anchor="middle" font-size="8.5" fill="#f1f8e9">중상급·서쪽편향</text>
+            <text x="100" y="60" text-anchor="middle" font-size="7.5" fill="#daf0c8">↑배치도 번호 확인</text>
           </g>
+          <text x="490" y="244" text-anchor="middle" font-size="9" fill="#555" font-weight="600" transform="rotate(90,490,244)">제3열</text>
 
-          <!-- ══════ 제4열 A/B 경계 (y=250~310) ══════ -->
-          <!-- A-15: 동쪽 코너, 여전히 상급 -->
-          <g onclick="lotDetail('A-15')" style="cursor:pointer" transform="translate(420,250)">
-            <rect width="64" height="60" rx="5" fill="#4CAF50" fill-opacity="0.88" stroke="#388E3C" stroke-width="1"/>
-            <text x="32" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-15</text>
-            <text x="32" y="38" text-anchor="middle" font-size="10" fill="white">★★★★</text>
-            <text x="32" y="52" text-anchor="middle" font-size="9" fill="#e8f5e9">상급·동코너</text>
+          <!-- ══════ 제4열 A/B 경계 (y=286~354) ══════ -->
+          <!-- A-15: 동쪽 코너 -->
+          <g onclick="lotDetail('A-15')" style="cursor:pointer" transform="translate(420,286)">
+            <rect width="64" height="68" rx="5" fill="#4CAF50" fill-opacity="0.88" stroke="#388E3C" stroke-width="1"/>
+            <text x="32" y="20" text-anchor="middle" font-size="11" fill="white" font-weight="700">A-15</text>
+            <text x="32" y="34" text-anchor="middle" font-size="9.5" fill="white">★★★★</text>
+            <text x="32" y="47" text-anchor="middle" font-size="8.5" fill="#e8f5e9">상급·동코너</text>
+            <text x="32" y="60" text-anchor="middle" font-size="7.5" fill="#c8efc8">↑배치도 번호</text>
           </g>
           <!-- A-16 -->
-          <g onclick="lotDetail('A-16')" style="cursor:pointer" transform="translate(340,250)">
-            <rect width="76" height="60" rx="5" fill="#8BC34A" fill-opacity="0.88" stroke="#689F38" stroke-width="1"/>
-            <text x="38" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-16</text>
-            <text x="38" y="38" text-anchor="middle" font-size="10" fill="white">★★★½</text>
-            <text x="38" y="52" text-anchor="middle" font-size="9" fill="#f1f8e9">중상급</text>
+          <g onclick="lotDetail('A-16')" style="cursor:pointer" transform="translate(340,286)">
+            <rect width="76" height="68" rx="5" fill="#8BC34A" fill-opacity="0.88" stroke="#689F38" stroke-width="1"/>
+            <text x="38" y="20" text-anchor="middle" font-size="11" fill="white" font-weight="700">A-16</text>
+            <text x="38" y="34" text-anchor="middle" font-size="9.5" fill="white">★★★½</text>
+            <text x="38" y="47" text-anchor="middle" font-size="8.5" fill="#f1f8e9">중상급</text>
+            <text x="38" y="60" text-anchor="middle" font-size="7.5" fill="#daf0c8">↑배치도 번호 확인</text>
           </g>
           <!-- A-17 -->
-          <g onclick="lotDetail('A-17')" style="cursor:pointer" transform="translate(258,250)">
-            <rect width="78" height="60" rx="5" fill="#8BC34A" fill-opacity="0.88" stroke="#689F38" stroke-width="1"/>
-            <text x="39" y="22" text-anchor="middle" font-size="12" fill="white" font-weight="700">A-17</text>
-            <text x="39" y="38" text-anchor="middle" font-size="10" fill="white">★★★½</text>
-            <text x="39" y="52" text-anchor="middle" font-size="9" fill="#f1f8e9">중상급</text>
+          <g onclick="lotDetail('A-17')" style="cursor:pointer" transform="translate(258,286)">
+            <rect width="78" height="68" rx="5" fill="#8BC34A" fill-opacity="0.88" stroke="#689F38" stroke-width="1"/>
+            <text x="39" y="20" text-anchor="middle" font-size="11" fill="white" font-weight="700">A-17</text>
+            <text x="39" y="34" text-anchor="middle" font-size="9.5" fill="white">★★★½</text>
+            <text x="39" y="47" text-anchor="middle" font-size="8.5" fill="#f1f8e9">중상급</text>
+            <text x="39" y="60" text-anchor="middle" font-size="7.5" fill="#daf0c8">↑배치도 번호 확인</text>
           </g>
+          <text x="490" y="320" text-anchor="middle" font-size="9" fill="#555" font-weight="600" transform="rotate(90,490,320)">제4열</text>
           <!-- A/B 경계선 -->
-          <line x1="54" y1="318" x2="488" y2="318" stroke="#185FA5" stroke-width="1.2" stroke-dasharray="6 3"/>
-          <text x="280" y="334" text-anchor="middle" font-size="10" fill="#185FA5">— — — B구역 경계 (이하 B구역) — — —</text>
+          <line x1="54" y1="362" x2="488" y2="362" stroke="#185FA5" stroke-width="1.2" stroke-dasharray="6 3"/>
+          <text x="280" y="378" text-anchor="middle" font-size="10" fill="#185FA5">— — — B구역 경계 (이하 B구역) — — —</text>
         </svg>
       </div>
       <p style="font-size:11px;color:#aaa;margin-top:8px;padding:0 4px">* A-01~A-17은 풍수 분석을 위한 개략 구획 번호입니다. 실제 분양 필지 번호는 킹스우드 분양 자료를 확인하세요.</p>
@@ -850,103 +843,6 @@ function show(id) {
   event.target.classList.add('on');
 }
 
-// ─── 팬·줌 ─────────────────────────────────────────────────────────
-(function(){
-  const vp = document.getElementById('mapVp');
-  const canvas = document.getElementById('mapCanvas');
-  if (!vp || !canvas) return;
-
-  let sc = 1, tx = 0, ty = 0;
-  let drag = false, sx = 0, sy = 0;
-  let lastDist = 0, lastMidX = 0, lastMidY = 0;
-
-  function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
-
-  function clampPan(){
-    const vw = vp.offsetWidth, vh = vp.offsetHeight;
-    const cw = canvas.offsetWidth, ch = canvas.offsetHeight;
-    const maxTx = 0, minTx = Math.min(0, vw - cw * sc);
-    const maxTy = 0, minTy = Math.min(0, vh - ch * sc);
-    tx = clamp(tx, minTx, maxTx);
-    ty = clamp(ty, minTy, maxTy);
-  }
-
-  function apply(){
-    canvas.style.transform = `translate(${tx}px,${ty}px) scale(${sc})`;
-    document.getElementById('zmPct').textContent = Math.round(sc * 100) + '%';
-  }
-
-  function zoomAt(factor, cx, cy){
-    const ns = clamp(sc * factor, 1, 7);
-    tx = cx - (cx - tx) * (ns / sc);
-    ty = cy - (cy - ty) * (ns / sc);
-    sc = ns;
-    clampPan();
-    apply();
-  }
-
-  window.zm = factor => zoomAt(factor, vp.offsetWidth/2, vp.offsetHeight/2);
-  window.zmReset = () => { sc=1; tx=0; ty=0; apply(); };
-
-  // 마우스 휠
-  vp.addEventListener('wheel', e => {
-    e.preventDefault();
-    const r = vp.getBoundingClientRect();
-    zoomAt(e.deltaY < 0 ? 1.2 : 1/1.2, e.clientX - r.left, e.clientY - r.top);
-  }, { passive: false });
-
-  // 마우스 드래그
-  vp.addEventListener('mousedown', e => {
-    drag = true; sx = e.clientX - tx; sy = e.clientY - ty;
-    vp.style.cursor = 'grabbing';
-    e.preventDefault();
-  });
-  window.addEventListener('mousemove', e => {
-    if (!drag) return;
-    tx = e.clientX - sx; ty = e.clientY - sy;
-    clampPan(); apply();
-  });
-  window.addEventListener('mouseup', () => { drag = false; vp.style.cursor = 'grab'; });
-
-  // 터치 드래그 & 핀치 줌
-  vp.addEventListener('touchstart', e => {
-    if (e.touches.length === 1) {
-      drag = true;
-      sx = e.touches[0].clientX - tx;
-      sy = e.touches[0].clientY - ty;
-    } else if (e.touches.length === 2) {
-      drag = false;
-      lastDist = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY);
-      lastMidX = (e.touches[0].clientX + e.touches[1].clientX)/2 - vp.getBoundingClientRect().left;
-      lastMidY = (e.touches[0].clientY + e.touches[1].clientY)/2 - vp.getBoundingClientRect().top;
-    }
-  }, { passive: true });
-
-  vp.addEventListener('touchmove', e => {
-    e.preventDefault();
-    if (e.touches.length === 1 && drag) {
-      tx = e.touches[0].clientX - sx;
-      ty = e.touches[0].clientY - sy;
-      clampPan(); apply();
-    } else if (e.touches.length === 2) {
-      const dist = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY);
-      const r = vp.getBoundingClientRect();
-      const midX = (e.touches[0].clientX + e.touches[1].clientX)/2 - r.left;
-      const midY = (e.touches[0].clientY + e.touches[1].clientY)/2 - r.top;
-      zoomAt(dist / lastDist, midX, midY);
-      lastDist = dist;
-    }
-  }, { passive: false });
-
-  vp.addEventListener('touchend', e => {
-    if (e.touches.length < 2) lastDist = 0;
-    if (e.touches.length === 0) drag = false;
-  });
-})();
 
 const zoneInfo = {
   a: {
