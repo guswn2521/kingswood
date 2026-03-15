@@ -10,19 +10,19 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   background: #f5f3ec;
   color: #1a1a1a;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.6;
 }
 .page { max-width: 860px; margin: 0 auto; padding: 20px 16px 40px; }
 
 /* ─── 헤더 ───────────────────────────────── */
 .hd { text-align: center; margin-bottom: 16px; }
-.hd h1 { font-size: 19px; font-weight: 700; color: #1a1a1a; margin-bottom: 4px; }
-.hd p  { font-size: 12px; color: #666; }
+.hd h1 { font-size: 22px; font-weight: 700; color: #1a1a1a; margin-bottom: 4px; }
+.hd p  { font-size: 14px; color: #666; }
 
 /* ─── 요약 칩 ────────────────────────────── */
 .chips { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; margin-bottom: 18px; }
-.chip { font-size: 12px; padding: 4px 12px; border-radius: 20px; font-weight: 500; }
+.chip { font-size: 13px; padding: 4px 12px; border-radius: 20px; font-weight: 500; }
 .ch-coral { background:#FAECE7; color:#4A1B0C; border:1px solid #F5C4B3; }
 .ch-green { background:#EAF3DE; color:#27500A; border:1px solid #C0DD97; }
 .ch-blue  { background:#E6F1FB; color:#0C447C; border:1px solid #B5D4F4; }
@@ -31,8 +31,8 @@ body {
 /* ─── 탭 ─────────────────────────────────── */
 .tabs { display: flex; gap: 4px; margin-bottom: 14px; flex-wrap: wrap; }
 .tab {
-  padding: 7px 16px; border-radius: 8px;
-  border: 1px solid #d8d5cc; font-size: 13px; cursor: pointer;
+  padding: 8px 17px; border-radius: 8px;
+  border: 1px solid #d8d5cc; font-size: 15px; cursor: pointer;
   background: transparent; color: #666; transition: all .15s;
 }
 .tab.on { background: #fff; color: #1a1a1a; font-weight: 600; border-color: #aaa; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
@@ -44,7 +44,7 @@ body {
   background: #fff; border-radius: 12px;
   border: 1px solid #e5e2d9; padding: 14px 16px; margin-bottom: 12px;
 }
-.card-title { font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 10px; }
+.card-title { font-size: 15px; font-weight: 600; color: #1a1a1a; margin-bottom: 10px; }
 
 /* ─── 지도 래퍼 ──────────────────────────── */
 .map-wrap { position: relative; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 14px rgba(0,0,0,.14); margin-bottom: 12px; }
@@ -53,14 +53,10 @@ body {
 /* zone polygon cursor */
 .map-svg polygon { cursor: pointer; transition: fill-opacity .2s; }
 .map-svg polygon:hover { fill-opacity: 0.55 !important; }
-/* ─── A구역 배치도 크롭 ──────────────────── */
-.azone-crop { position: relative; overflow: hidden; border-radius: 10px; height: 260px; background: #ddd; margin-bottom: 10px; }
-@media(max-width:560px){ .azone-crop { height: 180px; } }
-.azone-crop img { position: absolute; width: 230%; top: -8%; right: 18%; pointer-events: none; }
 
 /* ─── 범례 ───────────────────────────────── */
 .legend { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
-.leg-item { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+.leg-item { display: flex; align-items: center; gap: 6px; font-size: 14px; }
 .leg-dot { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
 
 /* ─── 구역 카드 그리드 ───────────────────── */
@@ -70,8 +66,8 @@ body {
 .zc-b { background:#E6F1FB; border-color:#9EC5EF; }
 .zc-c { background:#FAEEDA; border-color:#F5BE5E; }
 .zc-x { background:#FAECE7; border-color:#F0A88D; }
-.zc-name { font-size: 13px; font-weight: 700; margin-bottom: 5px; }
-.zc-body { font-size: 12px; color: #444; line-height: 1.65; }
+.zc-name { font-size: 15px; font-weight: 700; margin-bottom: 5px; }
+.zc-body { font-size: 14px; color: #444; line-height: 1.65; }
 
 /* ─── 사주 요약 그리드 ───────────────────── */
 .saju-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
@@ -123,7 +119,7 @@ body {
 .tab { white-space: nowrap; flex-shrink: 0; }
 /* ─── SVG 스크롤 래퍼 ───────────────────── */
 .svg-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.svg-scroll svg { min-width: 480px; }
+.svg-scroll svg { min-width: 500px; }
 </style>
 </head>
 <body>
@@ -547,27 +543,15 @@ body {
   <!-- ======== 탭 5: A구역 상세 ======== -->
   <div id="tab-azone" class="panel">
 
-    <div style="padding:12px 14px;background:#EAF3DE;border-radius:10px;border:1px solid #A6C97D;margin-bottom:12px;font-size:13px;color:#1a1a1a;line-height:1.7;">
+    <div style="padding:14px 16px;background:#EAF3DE;border-radius:10px;border:1px solid #A6C97D;margin-bottom:12px;font-size:15px;color:#1a1a1a;line-height:1.8;">
       <strong style="color:#1a6b2e">A구역</strong>은 단지 내 <strong>북동 고지대</strong>로, 환산(현무)을 등지고 대청호(주작)를 바라보는 배산임수 조건 최상 구역입니다.<br>
-      아래 <b>① 실제 배치도</b>에서 필지 번호를 확인하고, <b>② 개략 도면</b>에서 해당 위치의 별점 평가를 확인하세요.
-    </div>
-
-    <!-- ① 실제 배치도 — A구역 영역 확대 -->
-    <div class="card" style="padding:10px 10px 8px">
-      <div class="card-title" style="margin-bottom:8px">① 실제 배치도 — A구역 (단지 북동쪽 고지대)</div>
-      <div class="azone-crop">
-        <img src="2차단지 배치도.png" alt="A구역 실제 배치도">
-      </div>
-      <p style="font-size:11px;color:#666;margin-top:6px;line-height:1.6;">
-        위 이미지에서 <strong>우측 상단(북동쪽)</strong> 필지들이 A구역입니다. 각 필지 안에 인쇄된 번호가 <strong>실제 분양 필지번호</strong>입니다.<br>
-        아래 ② 개략 도면의 열(제1열~제4열) 위치와 비교해 해당 필지번호를 찾으세요.
-      </p>
+      아래 <b>위치별 별점 도면</b>에서 구역 색상을 확인하고, 실제 필지 번호와 대조하세요. <b>동쪽 코너 필지</b>일수록 최우선 추천입니다.
     </div>
 
     <!-- 평가 기준 -->
     <div class="card">
       <div class="card-title">필지별 평가 기준</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:14px">
         <div style="background:#EAF3DE;border-radius:8px;padding:10px">
           <strong style="color:#27500A">가점 요소</strong>
           <ul style="margin:6px 0 0 16px;color:#333;line-height:1.9">
@@ -590,19 +574,69 @@ body {
     </div>
 
     <!-- 범례 -->
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;font-size:12px;align-items:center">
-      <div style="display:flex;align-items:center;gap:5px"><div style="width:14px;height:14px;background:#1a6b2e;border-radius:3px;flex-shrink:0"></div><strong>★★★★★ 최상급</strong></div>
-      <div style="display:flex;align-items:center;gap:5px"><div style="width:14px;height:14px;background:#2e7d32;border-radius:3px;flex-shrink:0"></div><strong>★★★★½ 상급+</strong></div>
-      <div style="display:flex;align-items:center;gap:5px"><div style="width:14px;height:14px;background:#4CAF50;border-radius:3px;flex-shrink:0"></div>★★★★ 상급</div>
-      <div style="display:flex;align-items:center;gap:5px"><div style="width:14px;height:14px;background:#8BC34A;border-radius:3px;flex-shrink:0"></div>★★★½ 중상급</div>
-      <span style="font-size:11px;color:#888;margin-left:4px">필지 클릭 → 상세 설명</span>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;font-size:14px;align-items:center">
+      <div style="display:flex;align-items:center;gap:6px"><div style="width:16px;height:16px;background:#1a6b2e;border-radius:3px;flex-shrink:0"></div><strong>★★★★★ 최상급</strong></div>
+      <div style="display:flex;align-items:center;gap:6px"><div style="width:16px;height:16px;background:#2e7d32;border-radius:3px;flex-shrink:0"></div><strong>★★★★½ 상급+</strong></div>
+      <div style="display:flex;align-items:center;gap:6px"><div style="width:16px;height:16px;background:#4CAF50;border-radius:3px;flex-shrink:0"></div>★★★★ 상급</div>
+      <div style="display:flex;align-items:center;gap:6px"><div style="width:16px;height:16px;background:#8BC34A;border-radius:3px;flex-shrink:0"></div>★★★½ 중상급</div>
+      <span style="font-size:13px;color:#888;margin-left:4px">아래 블록 클릭 → 상세 설명</span>
     </div>
 
-    <!-- ② 개략 도면 -->
+    <!-- 위치별 별점 도면: 배치도 배경 + 구역 오버레이 -->
     <div class="card" style="padding:10px 8px">
-      <div class="card-title" style="margin-bottom:8px">② 위치별 별점 개략 도면 <span style="font-size:11px;font-weight:400;color:#888">(클릭 → 상세 설명)</span></div>
+      <div class="card-title" style="margin-bottom:8px">A구역 위치별 별점 도면 — 필지번호·등급 동시 확인</div>
+      <!-- 배치도 이미지를 배경으로 A구역 확대 표시 -->
+      <div style="position:relative;border-radius:10px;overflow:hidden;height:540px;
+                  background:url('2차단지 배치도.png') no-repeat;
+                  background-size:370%;background-position:86% 5%;
+                  box-shadow:0 2px 12px rgba(0,0,0,.15)">
+        <svg style="position:absolute;inset:0;width:100%;height:100%"
+             viewBox="0 0 100 100" preserveAspectRatio="none">
+          <!-- 북쪽 띠 -->
+          <rect x="0" y="0" width="100" height="6.5" fill="rgba(26,107,46,0.8)"/>
+          <text x="50" y="4.7" text-anchor="middle" font-size="3.5" fill="white" font-weight="700">↑ 北 — 환산 능선 (현무) · 最高地</text>
+          <!-- 남쪽 띠 -->
+          <rect x="0" y="93.5" width="100" height="6.5" fill="rgba(24,95,165,0.8)"/>
+          <text x="50" y="98.2" text-anchor="middle" font-size="3.5" fill="white" font-weight="700">↓ 南 — 대청호 (주작) · 조망 방향</text>
+          <!-- 동쪽 띠 -->
+          <rect x="91" y="6.5" width="9" height="87" fill="rgba(46,125,50,0.55)"/>
+          <text x="95.5" y="50" text-anchor="middle" font-size="3" fill="white" font-weight="700" transform="rotate(90,95.5,50)">東 — 木기운 직입 ★★★★★</text>
+          <!-- 서쪽 주의 -->
+          <rect x="0" y="6.5" width="7" height="87" fill="rgba(186,117,23,0.35)"/>
+          <text x="3.5" y="50" text-anchor="middle" font-size="2.8" fill="white" transform="rotate(-90,3.5,50)">西 金기운 주의</text>
+
+          <!-- 제1열: ★★★★★ ~ ★★★★ (최고도) -->
+          <rect x="7" y="6.5" width="84" height="22" fill="#1a6b2e" fill-opacity="0.55" rx="0.5"/>
+          <text x="49" y="14" text-anchor="middle" font-size="4.2" fill="white" font-weight="700">제1열 — 최고도 (환산 직배면)</text>
+          <text x="49" y="20.5" text-anchor="middle" font-size="3.3" fill="#c8f5d5">동쪽 ★★★★★ · 중앙 ★★★★½ · 서쪽 ★★★★</text>
+
+          <!-- 제2열: ★★★★½ ~ ★★★½ -->
+          <rect x="7" y="30" width="84" height="21" fill="#2e7d32" fill-opacity="0.52" rx="0.5"/>
+          <text x="49" y="37.5" text-anchor="middle" font-size="4.2" fill="white" font-weight="700">제2열 — 고도 우수</text>
+          <text x="49" y="44" text-anchor="middle" font-size="3.3" fill="#c8f5d5">동코너 ★★★★½ · 중앙 ★★★★ · 서쪽 ★★★½</text>
+
+          <!-- 제3열: ★★★★ ~ ★★★½ -->
+          <rect x="7" y="52.5" width="84" height="20" fill="#4CAF50" fill-opacity="0.5" rx="0.5"/>
+          <text x="49" y="60" text-anchor="middle" font-size="4.2" fill="white" font-weight="700">제3열 — 중고도</text>
+          <text x="49" y="66.5" text-anchor="middle" font-size="3.3" fill="white">동코너 ★★★★ · 중앙 ★★★½ · 서쪽 ★★★½</text>
+
+          <!-- 제4열: ★★★★ ~ ★★★½ (A/B 경계) -->
+          <rect x="7" y="74" width="84" height="19.5" fill="#8BC34A" fill-opacity="0.5" rx="0.5"/>
+          <text x="49" y="81.5" text-anchor="middle" font-size="4.2" fill="white" font-weight="700">제4열 — A/B 경계 저지대</text>
+          <text x="49" y="88" text-anchor="middle" font-size="3.3" fill="white">동코너 ★★★★ · 서쪽 ★★★½</text>
+        </svg>
+      </div>
+      <div style="margin-top:9px;font-size:14px;color:#1a1a1a;line-height:1.8;background:#EAF3DE;border-radius:8px;padding:11px 14px;border-left:3px solid #3B6D11">
+        <strong>필지번호 확인 방법:</strong> 위 배치도 이미지에서 색상 구역 안에 인쇄된 번호가 실제 분양 필지번호입니다.<br>
+        <strong>동쪽(오른쪽) 코너</strong> 필지일수록 木기운이 강해 사주와 가장 잘 맞습니다. 1열 동쪽 2개 필지가 단지 최고 명당입니다.
+      </div>
+    </div>
+
+    <!-- 개별 필지 클릭 상세 도면 -->
+    <div class="card" style="padding:10px 8px">
+      <div class="card-title" style="margin-bottom:8px">위치별 상세 평가 도면 <span style="font-size:13px;font-weight:400;color:#888">(블록 클릭 → 상세 설명)</span></div>
       <div class="svg-scroll">
-        <svg width="560" height="460" viewBox="0 0 560 460">
+        <svg width="100%" viewBox="0 0 560 460" style="display:block;min-width:480px">
           <!-- 배경 방향 띠 -->
           <rect x="0" y="0" width="560" height="48" fill="#EAF3DE" opacity="0.7" rx="8"/>
           <text x="280" y="20" text-anchor="middle" font-size="12" fill="#27500A" font-weight="700">↑ 北 — 환산 능선 (현무 ★★★★★)</text>
@@ -773,7 +807,7 @@ body {
           <text x="280" y="378" text-anchor="middle" font-size="10" fill="#185FA5">— — — B구역 경계 (이하 B구역) — — —</text>
         </svg>
       </div>
-      <p style="font-size:11px;color:#aaa;margin-top:8px;padding:0 4px">* A-01~A-17은 풍수 분석을 위한 개략 구획 번호입니다. 실제 분양 필지 번호는 킹스우드 분양 자료를 확인하세요.</p>
+      <p style="font-size:13px;color:#888;margin-top:9px;padding:0 4px">* A-01~A-17은 위 배치도 도면의 위치 구획입니다. 실제 분양 필지 번호는 위 별점 도면 이미지에서 직접 확인하세요.</p>
     </div>
 
     <!-- 클릭 팝업 -->
@@ -781,54 +815,84 @@ body {
       <div id="lot-popup-inner"></div>
     </div>
 
-    <!-- TOP 5 -->
+    <!-- TOP 10 -->
     <div class="card">
-      <div class="card-title">A구역 추천 TOP 5</div>
+      <div class="card-title">A구역 추천 TOP 10</div>
       <div style="overflow-x:auto">
-        <table style="width:100%;font-size:12px;border-collapse:collapse;min-width:380px">
+        <table style="width:100%;font-size:14px;border-collapse:collapse;min-width:420px">
           <thead>
             <tr style="background:#f5f3ec;border-bottom:1px solid #e5e2d9">
-              <th style="padding:8px 8px;text-align:center;font-weight:600">순위</th>
-              <th style="padding:8px 8px;text-align:left;font-weight:600">필지</th>
-              <th style="padding:8px 8px;text-align:center;font-weight:600">평가</th>
-              <th style="padding:8px 8px;text-align:left;font-weight:600">핵심 이유</th>
+              <th style="padding:10px 8px;text-align:center;font-weight:600">순위</th>
+              <th style="padding:10px 8px;text-align:left;font-weight:600">위치 구획</th>
+              <th style="padding:10px 8px;text-align:center;font-weight:600">평가</th>
+              <th style="padding:10px 8px;text-align:left;font-weight:600">핵심 이유</th>
             </tr>
           </thead>
           <tbody>
             <tr style="background:#EAF3DE;cursor:pointer" onclick="lotDetail('A-01')">
-              <td style="padding:8px;text-align:center;font-weight:700;color:#1a6b2e">1위</td>
-              <td style="padding:8px;font-weight:700;color:#1a6b2e">A-01</td>
-              <td style="padding:8px;text-align:center">★★★★★</td>
-              <td style="padding:8px;color:#27500A">NE코너 최고도 · 동남향 · 木水기운 동시 최대 흡수</td>
+              <td style="padding:9px;text-align:center;font-weight:700;color:#1a6b2e">1위</td>
+              <td style="padding:9px;font-weight:700;color:#1a6b2e">A-01 (1열 NE코너)</td>
+              <td style="padding:9px;text-align:center">★★★★★</td>
+              <td style="padding:9px;color:#27500A">단지 최고도 NE코너 · 동남향 · 木水기운 동시 최대 흡수</td>
             </tr>
             <tr style="background:#EAF3DE;cursor:pointer" onclick="lotDetail('A-02')">
-              <td style="padding:8px;text-align:center;font-weight:700;color:#1a6b2e">2위</td>
-              <td style="padding:8px;font-weight:700;color:#1a6b2e">A-02</td>
-              <td style="padding:8px;text-align:center">★★★★★</td>
-              <td style="padding:8px;color:#27500A">제1열 동쪽 · 고도 최상 · 환산 밀착 · 조망 최상</td>
+              <td style="padding:9px;text-align:center;font-weight:700;color:#1a6b2e">2위</td>
+              <td style="padding:9px;font-weight:700;color:#1a6b2e">A-02 (1열 동쪽)</td>
+              <td style="padding:9px;text-align:center">★★★★★</td>
+              <td style="padding:9px;color:#27500A">제1열 동쪽 · 최고도 · 환산 직배면 · 대청호 조망 최상</td>
             </tr>
             <tr style="cursor:pointer" onclick="lotDetail('A-06')">
-              <td style="padding:8px;text-align:center;font-weight:600;color:#2e7d32">3위</td>
-              <td style="padding:8px;font-weight:600">A-06</td>
-              <td style="padding:8px;text-align:center">★★★★½</td>
-              <td style="padding:8px;color:#444">제2열 동쪽 코너 · 동쪽 완전 개방 · 木기운 직입</td>
+              <td style="padding:9px;text-align:center;font-weight:600;color:#2e7d32">3위</td>
+              <td style="padding:9px;font-weight:600">A-06 (2열 동코너)</td>
+              <td style="padding:9px;text-align:center">★★★★½</td>
+              <td style="padding:9px;color:#444">제2열 동쪽 코너 · 동쪽 완전 개방 · 木기운 직입</td>
             </tr>
             <tr style="background:#f5f3ec;cursor:pointer" onclick="lotDetail('A-03')">
-              <td style="padding:8px;text-align:center;font-weight:600;color:#2e7d32">4위</td>
-              <td style="padding:8px;font-weight:600">A-03</td>
-              <td style="padding:8px;text-align:center">★★★★½</td>
-              <td style="padding:8px;color:#444">제1열 중앙 · 고도 최상 · 남향 정남 · 대청호 조망</td>
+              <td style="padding:9px;text-align:center;font-weight:600;color:#2e7d32">4위</td>
+              <td style="padding:9px;font-weight:600">A-03 (1열 중앙)</td>
+              <td style="padding:9px;text-align:center">★★★★½</td>
+              <td style="padding:9px;color:#444">제1열 중앙 · 최고도 · 정남향 · 대청호 조망 우수</td>
             </tr>
             <tr style="cursor:pointer" onclick="lotDetail('A-04')">
-              <td style="padding:8px;text-align:center;font-weight:600;color:#2e7d32">5위</td>
-              <td style="padding:8px;font-weight:600">A-04</td>
-              <td style="padding:8px;text-align:center">★★★★½</td>
-              <td style="padding:8px;color:#444">제1열 · 고도 최상 · 환산 직배면 · 배산임수 정석</td>
+              <td style="padding:9px;text-align:center;font-weight:600;color:#2e7d32">5위</td>
+              <td style="padding:9px;font-weight:600">A-04 (1열)</td>
+              <td style="padding:9px;text-align:center">★★★★½</td>
+              <td style="padding:9px;color:#444">제1열 · 최고도 · 환산 직배면 · 배산임수 정석</td>
+            </tr>
+            <tr style="background:#f5f3ec;cursor:pointer" onclick="lotDetail('A-07')">
+              <td style="padding:9px;text-align:center;font-weight:600;color:#388E3C">6위</td>
+              <td style="padding:9px;font-weight:600">A-07 (2열 동쪽)</td>
+              <td style="padding:9px;text-align:center">★★★★</td>
+              <td style="padding:9px;color:#444">제2열 동쪽 · 배산임수 충족 · 대청호 조망 가능</td>
+            </tr>
+            <tr style="cursor:pointer" onclick="lotDetail('A-08')">
+              <td style="padding:9px;text-align:center;font-weight:600;color:#388E3C">7위</td>
+              <td style="padding:9px;font-weight:600">A-08 (2열 중앙)</td>
+              <td style="padding:9px;text-align:center">★★★★</td>
+              <td style="padding:9px;color:#444">제2열 중앙 · 균형잡힌 배산임수 · 동서 균등 노출</td>
+            </tr>
+            <tr style="background:#f5f3ec;cursor:pointer" onclick="lotDetail('A-11')">
+              <td style="padding:9px;text-align:center;font-weight:600;color:#388E3C">8위</td>
+              <td style="padding:9px;font-weight:600">A-11 (3열 동코너)</td>
+              <td style="padding:9px;text-align:center">★★★★</td>
+              <td style="padding:9px;color:#444">제3열 동쪽 코너 · 동쪽 개방 · 木기운 직입 유지</td>
+            </tr>
+            <tr style="cursor:pointer" onclick="lotDetail('A-15')">
+              <td style="padding:9px;text-align:center;font-weight:600;color:#388E3C">9위</td>
+              <td style="padding:9px;font-weight:600">A-15 (4열 동코너)</td>
+              <td style="padding:9px;text-align:center">★★★★</td>
+              <td style="padding:9px;color:#444">제4열 동쪽 코너 · A/B경계 · 동쪽 전망 우수</td>
+            </tr>
+            <tr style="background:#f5f3ec;cursor:pointer" onclick="lotDetail('A-05')">
+              <td style="padding:9px;text-align:center;font-weight:600;color:#388E3C">10위</td>
+              <td style="padding:9px;font-weight:600">A-05 (1열 서쪽)</td>
+              <td style="padding:9px;text-align:center">★★★★</td>
+              <td style="padding:9px;color:#444">제1열 최서쪽 · 최고도 · 동쪽 조경으로 木기운 보완 권장</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <p style="font-size:11px;color:#888;margin-top:8px;">* 표 행을 클릭하면 필지 상세 설명이 표시됩니다.</p>
+      <p style="font-size:13px;color:#888;margin-top:9px;">* 위치 구획(A-01~A-17)은 개략 위치 기준입니다. 실제 필지번호는 위 별점 도면 이미지에서 직접 확인하세요. 행 클릭 시 상세 설명이 표시됩니다.</p>
     </div>
 
   </div><!-- tab-azone end -->
@@ -892,8 +956,8 @@ function showZone(key) {
   const z = zoneInfo[key];
   const d = document.getElementById('zone-detail');
   document.getElementById('zone-detail-inner').innerHTML =
-    `<div style="font-size:13px;font-weight:700;color:${z.color};margin-bottom:6px;">${z.title}</div>` +
-    `<div style="font-size:12px;color:#444;line-height:1.7;">${z.body}</div>`;
+    `<div style="font-size:15px;font-weight:700;color:${z.color};margin-bottom:6px;">${z.title}</div>` +
+    `<div style="font-size:14px;color:#444;line-height:1.7;">${z.body}</div>`;
   d.style.display = 'block';
   d.style.background = z.bg;
   d.style.borderColor = z.bd;
@@ -986,12 +1050,12 @@ function lotDetail(id) {
   const el = document.getElementById('lot-popup');
   document.getElementById('lot-popup-inner').innerHTML =
     `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-      <div style="background:${d.c};color:${d.tc};padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700">${d.s} ${d.g}</div>
-      <div style="font-size:14px;font-weight:700;color:#1a1a1a">${d.title}</div>
+      <div style="background:${d.c};color:${d.tc};padding:4px 12px;border-radius:6px;font-size:13px;font-weight:700">${d.s} ${d.g}</div>
+      <div style="font-size:16px;font-weight:700;color:#1a1a1a">${d.title}</div>
      </div>
-     <div style="font-size:12px;color:#444;line-height:1.75">${d.body}</div>
+     <div style="font-size:14px;color:#444;line-height:1.75">${d.body}</div>
      <button onclick="document.getElementById('lot-popup').style.display='none'"
-       style="margin-top:10px;font-size:11px;padding:4px 12px;border:1px solid #ccc;border-radius:6px;cursor:pointer;background:#f5f3ec">닫기</button>`;
+       style="margin-top:10px;font-size:13px;padding:5px 14px;border:1px solid #ccc;border-radius:6px;cursor:pointer;background:#f5f3ec">닫기</button>`;
   el.style.display = 'block';
   el.scrollIntoView({ behavior:'smooth', block:'nearest' });
 }
