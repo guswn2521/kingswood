@@ -1,0 +1,420 @@
+
+<style>
+  :root { --green: #3B6D11; --green-l: #EAF3DE; --green-m: #639922; --amber: #BA7517; --amber-l: #FAEEDA; --blue: #185FA5; --blue-l: #E6F1FB; --coral: #993C1D; --coral-l: #FAECE7; --gray-l: #F1EFE8; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans, sans-serif); }
+  .wrap { padding: 1rem 0; }
+  .tabs { display: flex; gap: 4px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .tab { padding: 7px 14px; border-radius: var(--border-radius-md, 8px); border: 0.5px solid var(--color-border-secondary); font-size: 13px; cursor: pointer; background: transparent; color: var(--color-text-secondary); transition: all .15s; }
+  .tab.active { background: var(--color-background-secondary); color: var(--color-text-primary); font-weight: 500; border-color: var(--color-border-primary); }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .section-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 0.75rem; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg, 12px); padding: 1rem 1.25rem; margin-bottom: 1rem; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .pillar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .pillar { text-align: center; border-radius: var(--border-radius-md, 8px); padding: 10px 6px; border: 0.5px solid var(--color-border-tertiary); }
+  .pillar .label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 4px; }
+  .pillar .hanja { font-size: 22px; font-weight: 500; line-height: 1.2; }
+  .pillar .hangul { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+  .pillar .elem { font-size: 10px; margin-top: 4px; padding: 2px 6px; border-radius: 4px; display: inline-block; font-weight: 500; }
+  .e-fire { background: #FAECE7; color: #993C1D; }
+  .e-earth { background: #FAEEDA; color: #633806; }
+  .e-metal { background: #F1EFE8; color: #5F5E5A; }
+  .e-water { background: #E6F1FB; color: #185FA5; }
+  .e-wood { background: #EAF3DE; color: #3B6D11; }
+  .e-none { background: var(--color-background-secondary); color: var(--color-text-tertiary); }
+  .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .bar-label { font-size: 13px; width: 32px; color: var(--color-text-secondary); flex-shrink: 0; }
+  .bar-track { flex: 1; height: 10px; background: var(--color-background-secondary); border-radius: 5px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 5px; transition: width .5s; }
+  .bar-count { font-size: 12px; width: 20px; text-align: right; color: var(--color-text-secondary); }
+  .verdict { border-left: 3px solid; padding: 10px 12px; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; font-size: 13px; line-height: 1.6; margin-top: 0.75rem; }
+  .verdict.green { border-color: #3B6D11; background: #EAF3DE; color: #27500A; }
+  .verdict.amber { border-color: #BA7517; background: #FAEEDA; color: #412402; }
+  .verdict.coral { border-color: #993C1D; background: #FAECE7; color: #4A1B0C; }
+  .compass-wrap { position: relative; width: 100%; max-width: 360px; margin: 0 auto; }
+  .zone-list { list-style: none; }
+  .zone-list li { padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 13px; display: flex; gap: 10px; align-items: flex-start; }
+  .zone-list li:last-child { border-bottom: none; }
+  .zone-badge { font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
+  .badge-a { background: #EAF3DE; color: #27500A; }
+  .badge-b { background: #E6F1FB; color: #0C447C; }
+  .badge-c { background: #FAEEDA; color: #412402; }
+  .badge-x { background: #FAECE7; color: #4A1B0C; }
+  .house-tip { font-size: 13px; line-height: 1.7; color: var(--color-text-secondary); }
+  .house-tip strong { color: var(--color-text-primary); font-weight: 500; }
+  .highlight-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 0.75rem; }
+  .hl-badge { font-size: 12px; padding: 4px 10px; border-radius: var(--border-radius-md); border: 0.5px solid; }
+  .hl-green { background: #EAF3DE; color: #27500A; border-color: #C0DD97; }
+  .hl-blue { background: #E6F1FB; color: #0C447C; border-color: #B5D4F4; }
+  .hl-amber { background: #FAEEDA; color: #412402; border-color: #FAC775; }
+  .hl-coral { background: #FAECE7; color: #4A1B0C; border-color: #F5C4B3; }
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 1rem; }
+  .stat { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px; text-align: center; }
+  .stat .s-label { font-size: 11px; color: var(--color-text-secondary); }
+  .stat .s-val { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin-top: 2px; }
+  @media (max-width: 480px) { .pillar-grid { grid-template-columns: repeat(4, 1fr); gap: 4px; } .two-col { grid-template-columns: 1fr; } .stat-grid { grid-template-columns: repeat(3, 1fr); } }
+</style>
+
+<div class="wrap">
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('saju')">사주팔자</button>
+    <button class="tab" onclick="showTab('ohaeng')">오행분석</button>
+    <button class="tab" onclick="showTab('pungsu')">풍수방위</button>
+    <button class="tab" onclick="showTab('house')">집터 가이드</button>
+  </div>
+
+  <!-- 사주팔자 탭 -->
+  <div id="panel-saju" class="panel active">
+    <div class="two-col">
+      <!-- 아버지 -->
+      <div class="card">
+        <div class="section-title">아버지 — 丙火 일간</div>
+        <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:10px;">음력 1961.11.11 · 저녁 8시 (戌時)</div>
+        <div class="pillar-grid">
+          <div class="pillar" style="background:var(--color-background-secondary)">
+            <div class="label">년주</div>
+            <div class="hanja" style="color:#5F5E5A">辛<br><span style="font-size:16px">丑</span></div>
+            <div class="hangul">신축</div>
+            <div class="elem e-metal">金·土</div>
+          </div>
+          <div class="pillar" style="background:var(--color-background-secondary)">
+            <div class="label">월주</div>
+            <div class="hanja" style="color:#5F5E5A">庚<br><span style="font-size:16px">子</span></div>
+            <div class="hangul">경자</div>
+            <div class="elem e-metal">金·水</div>
+          </div>
+          <div class="pillar" style="background:#FAECE7; border-color:#F5C4B3">
+            <div class="label">일주 ★</div>
+            <div class="hanja" style="color:#993C1D">丙<br><span style="font-size:16px">戌</span></div>
+            <div class="hangul">병술</div>
+            <div class="elem e-fire">火·土</div>
+          </div>
+          <div class="pillar" style="background:var(--color-background-secondary)">
+            <div class="label">시주</div>
+            <div class="hanja" style="color:#633806">戊<br><span style="font-size:16px">戌</span></div>
+            <div class="hangul">무술</div>
+            <div class="elem e-earth">土·土</div>
+          </div>
+        </div>
+        <div class="verdict amber" style="margin-top:10px">
+          <strong>일간 丙火 (태양불)</strong> — 土·金이 과다하여 신약. 木인성이 전무해 에너지 보충 경로 없음. <strong>희용신: 木&gt;火</strong>, 기신: 金·土·水
+        </div>
+      </div>
+
+      <!-- 어머니 -->
+      <div class="card">
+        <div class="section-title">어머니 — 己土 일간</div>
+        <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:10px;">음력 1961.08.12 · 오전 9시 (巳時)</div>
+        <div class="pillar-grid">
+          <div class="pillar" style="background:var(--color-background-secondary)">
+            <div class="label">년주</div>
+            <div class="hanja" style="color:#5F5E5A">辛<br><span style="font-size:16px">丑</span></div>
+            <div class="hangul">신축</div>
+            <div class="elem e-metal">金·土</div>
+          </div>
+          <div class="pillar" style="background:var(--color-background-secondary)">
+            <div class="label">월주</div>
+            <div class="hanja" style="color:#993C1D">丁<br><span style="font-size:16px">酉</span></div>
+            <div class="hangul">정유</div>
+            <div class="elem e-fire">火·金</div>
+          </div>
+          <div class="pillar" style="background:#FAEEDA; border-color:#FAC775">
+            <div class="label">일주 ★</div>
+            <div class="hanja" style="color:#633806">己<br><span style="font-size:16px">未</span></div>
+            <div class="hangul">기미</div>
+            <div class="elem e-earth">土·土</div>
+          </div>
+          <div class="pillar" style="background:var(--color-background-secondary)">
+            <div class="label">시주</div>
+            <div class="hanja" style="color:#633806">己<br><span style="font-size:16px">巳</span></div>
+            <div class="hangul">기사</div>
+            <div class="elem e-earth">土·火</div>
+          </div>
+        </div>
+        <div class="verdict amber" style="margin-top:10px">
+          <strong>일간 己土 (들판의 흙)</strong> — 金설기 과다, 木이 전무. 관성 木 부재로 삶의 방향성 불안정. <strong>희용신: 木&gt;水</strong>, 기신: 土·金
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="background:var(--color-background-secondary); border-style:dashed">
+      <div class="section-title">핵심 결론</div>
+      <div class="highlight-row">
+        <span class="hl-coral">부부 공통: 木기운 완전 결핍</span>
+        <span class="hl-amber">金·土 과다 누적</span>
+        <span class="hl-green">木기운 보충이 최우선</span>
+        <span class="hl-blue">동향·동남향 택지 유리</span>
+      </div>
+      <div class="house-tip">두 분 모두 같은 辛丑년 출생이지만 일간이 각각 丙火·己土로 다릅니다. 아버지는 木(인성)으로 일간을 생조해야 하고, 어머니는 木(관성)으로 과다한 土를 극제해야 합니다. <strong>두 분 모두 木이 희용신</strong>이라는 점이 일치하므로 — 동쪽·동남쪽 방향의 택지가 부부 공통으로 최적입니다.</div>
+    </div>
+  </div>
+
+  <!-- 오행분석 탭 -->
+  <div id="panel-ohaeng" class="panel">
+    <div class="two-col">
+      <div class="card">
+        <div class="section-title">아버지 오행 분포</div>
+        <div class="bar-row"><span class="bar-label">木</span><div class="bar-track"><div class="bar-fill" style="width:0%;background:#639922"></div></div><span class="bar-count">0</span></div>
+        <div class="bar-row"><span class="bar-label">火</span><div class="bar-track"><div class="bar-fill" style="width:20%;background:#D85A30"></div></div><span class="bar-count">1</span></div>
+        <div class="bar-row"><span class="bar-label">土</span><div class="bar-track"><div class="bar-fill" style="width:60%;background:#BA7517"></div></div><span class="bar-count">3</span></div>
+        <div class="bar-row"><span class="bar-label">金</span><div class="bar-track"><div class="bar-fill" style="width:40%;background:#888780"></div></div><span class="bar-count">2</span></div>
+        <div class="bar-row"><span class="bar-label">水</span><div class="bar-track"><div class="bar-fill" style="width:20%;background:#378ADD"></div></div><span class="bar-count">1</span></div>
+        <div class="verdict coral" style="margin-top:8px;font-size:12px">木(0개) 결핍 ← 병근. 집터에서 반드시 木기운 흡수 필요</div>
+      </div>
+      <div class="card">
+        <div class="section-title">어머니 오행 분포</div>
+        <div class="bar-row"><span class="bar-label">木</span><div class="bar-track"><div class="bar-fill" style="width:0%;background:#639922"></div></div><span class="bar-count">0</span></div>
+        <div class="bar-row"><span class="bar-label">火</span><div class="bar-track"><div class="bar-fill" style="width:20%;background:#D85A30"></div></div><span class="bar-count">1</span></div>
+        <div class="bar-row"><span class="bar-label">土</span><div class="bar-track"><div class="bar-fill" style="width:80%;background:#BA7517"></div></div><span class="bar-count">4</span></div>
+        <div class="bar-row"><span class="bar-label">金</span><div class="bar-track"><div class="bar-fill" style="width:60%;background:#888780"></div></div><span class="bar-count">3</span></div>
+        <div class="bar-row"><span class="bar-label">水</span><div class="bar-track"><div class="bar-fill" style="width:0%;background:#378ADD"></div></div><span class="bar-count">0</span></div>
+        <div class="verdict coral" style="margin-top:8px;font-size:12px">木·水 모두 결핍. 土·金 극과다. 목극토로 균형 회복 시급</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">오행별 풍수 방위 대응</div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;font-size:12px;border-collapse:collapse">
+          <thead>
+            <tr style="border-bottom:0.5px solid var(--color-border-secondary)">
+              <th style="text-align:left;padding:8px 6px;font-weight:500">오행</th>
+              <th style="text-align:left;padding:8px 6px;font-weight:500">방위</th>
+              <th style="text-align:left;padding:8px 6px;font-weight:500">색상</th>
+              <th style="text-align:left;padding:8px 6px;font-weight:500">두 분 관계</th>
+              <th style="text-align:center;padding:8px 6px;font-weight:500">채택</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:#EAF3DE">
+              <td style="padding:8px 6px;font-weight:500;color:#27500A">木</td>
+              <td style="padding:8px 6px;color:#27500A">동(東) · 동남(巽)</td>
+              <td style="padding:8px 6px;color:#27500A">청색·녹색</td>
+              <td style="padding:8px 6px;color:#27500A">부부 공통 최우선 희용신</td>
+              <td style="padding:8px 6px;text-align:center">✅ 최우선</td>
+            </tr>
+            <tr>
+              <td style="padding:8px 6px;font-weight:500;color:#185FA5">水</td>
+              <td style="padding:8px 6px">북(北) · 북동(艮)</td>
+              <td style="padding:8px 6px">흑·청색</td>
+              <td style="padding:8px 6px;color:var(--color-text-secondary)">어머니 재성, 아버지 관성</td>
+              <td style="padding:8px 6px;text-align:center">✅ 보조</td>
+            </tr>
+            <tr style="background:var(--color-background-secondary)">
+              <td style="padding:8px 6px;font-weight:500;color:#993C1D">火</td>
+              <td style="padding:8px 6px">남(南) · 남동(離)</td>
+              <td style="padding:8px 6px">적·주홍</td>
+              <td style="padding:8px 6px;color:var(--color-text-secondary)">아버지 본기(일간), 보조</td>
+              <td style="padding:8px 6px;text-align:center">△ 보조</td>
+            </tr>
+            <tr>
+              <td style="padding:8px 6px;font-weight:500;color:#633806">土</td>
+              <td style="padding:8px 6px">중앙 · 남서(坤)</td>
+              <td style="padding:8px 6px">황·갈색</td>
+              <td style="padding:8px 6px;color:#993C1D">두 분 모두 과다 — 기신</td>
+              <td style="padding:8px 6px;text-align:center">❌ 회피</td>
+            </tr>
+            <tr style="background:var(--color-background-secondary)">
+              <td style="padding:8px 6px;font-weight:500;color:#444441">金</td>
+              <td style="padding:8px 6px">서(西) · 북서(乾)</td>
+              <td style="padding:8px 6px">백·회색</td>
+              <td style="padding:8px 6px;color:#993C1D">두 분 모두 과다 — 기신</td>
+              <td style="padding:8px 6px;text-align:center">❌ 회피</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 풍수방위 탭 -->
+  <div id="panel-pungsu" class="panel">
+    <div class="card">
+      <div class="section-title">킹스우드 부지 사신사(四神砂) 분석</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+        <div style="padding:10px;border-radius:var(--border-radius-md);background:#E6F1FB;border:0.5px solid #B5D4F4">
+          <div style="font-size:11px;color:#185FA5;font-weight:500;margin-bottom:3px">현무(玄武) · 북쪽</div>
+          <div style="font-size:13px;color:#0C447C">환산 능선 ← 든든한 후방 산세</div>
+          <div style="font-size:11px;color:#185FA5;margin-top:3px">★★★★★ 최상</div>
+        </div>
+        <div style="padding:10px;border-radius:var(--border-radius-md);background:#EAF3DE;border:0.5px solid #C0DD97">
+          <div style="font-size:11px;color:#3B6D11;font-weight:500;margin-bottom:3px">주작(朱雀) · 남쪽</div>
+          <div style="font-size:13px;color:#27500A">대청호 수면 ← 명당수 전면</div>
+          <div style="font-size:11px;color:#3B6D11;margin-top:3px">★★★★★ 최상</div>
+        </div>
+        <div style="padding:10px;border-radius:var(--border-radius-md);background:#FAEEDA;border:0.5px solid #FAC775">
+          <div style="font-size:11px;color:#BA7517;font-weight:500;margin-bottom:3px">청룡(靑龍) · 동쪽</div>
+          <div style="font-size:13px;color:#412402">동쪽 완만한 구릉 ← 보통 / 숲</div>
+          <div style="font-size:11px;color:#BA7517;margin-top:3px">★★★★ 양호</div>
+        </div>
+        <div style="padding:10px;border-radius:var(--border-radius-md);background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary)">
+          <div style="font-size:11px;color:var(--color-text-secondary);font-weight:500;margin-bottom:3px">백호(白虎) · 서쪽</div>
+          <div style="font-size:13px;color:var(--color-text-primary)">서쪽 야산 ← 보통 / 청룡보다 낮음</div>
+          <div style="font-size:11px;color:var(--color-text-secondary);margin-top:3px">★★★ 보통</div>
+        </div>
+      </div>
+      <div class="verdict green">배산임수(背山臨水)의 전형적 길지입니다. 환산을 등지고 대청호를 바라보는 구조로, 전통 풍수의 4신사 조건을 두루 갖추고 있습니다.</div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">174필지 추천 구역 (사주 + 풍수 결합)</div>
+      <svg width="100%" viewBox="0 0 680 340">
+        <defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+        <!-- 배경 지형 묘사 -->
+        <!-- 북쪽 산 (환산) -->
+        <ellipse cx="340" cy="30" rx="280" ry="45" fill="#C0DD97" opacity="0.5"/>
+        <text class="ts" x="340" y="33" text-anchor="middle" fill="#27500A" font-size="12">환산 능선 (현무)</text>
+        <!-- 남쪽 호수 (대청호) -->
+        <ellipse cx="340" cy="310" rx="290" ry="35" fill="#B5D4F4" opacity="0.5"/>
+        <text class="ts" x="340" y="313" text-anchor="middle" fill="#0C447C" font-size="12">대청호 (주작)</text>
+        <!-- 단지 외곽 -->
+        <rect x="80" y="60" width="520" height="230" rx="16" fill="none" stroke="var(--color-border-secondary)" stroke-width="1" stroke-dasharray="6 4"/>
+        <text class="ts" x="340" y="52" text-anchor="middle" fill="var(--color-text-secondary)" font-size="11">킹스우드 2차 174필지</text>
+        <!-- A구역: 북동쪽 고지대 (최우선) -->
+        <rect x="360" y="72" width="220" height="100" rx="10" fill="#EAF3DE" stroke="#639922" stroke-width="1.5" opacity="0.9"/>
+        <text x="470" y="108" text-anchor="middle" font-size="14" font-weight="500" fill="#27500A">A구역</text>
+        <text x="470" y="126" text-anchor="middle" font-size="11" fill="#3B6D11">북동 고지대 · 동남향</text>
+        <text x="470" y="143" text-anchor="middle" font-size="10" fill="#3B6D11">★★★★★ 최우선 추천</text>
+        <!-- B구역: 단지 중앙 동쪽 -->
+        <rect x="360" y="185" width="220" height="90" rx="10" fill="#E6F1FB" stroke="#378ADD" stroke-width="1" opacity="0.9"/>
+        <text x="470" y="217" text-anchor="middle" font-size="14" font-weight="500" fill="#0C447C">B구역</text>
+        <text x="470" y="235" text-anchor="middle" font-size="11" fill="#185FA5">중앙 동쪽 · 남향</text>
+        <text x="470" y="252" text-anchor="middle" font-size="10" fill="#185FA5">★★★★ 차선 추천</text>
+        <!-- C구역: 중앙부 -->
+        <rect x="125" y="130" width="215" height="80" rx="10" fill="#FAEEDA" stroke="#BA7517" stroke-width="1" opacity="0.8"/>
+        <text x="232" y="163" text-anchor="middle" font-size="13" font-weight="500" fill="#412402">C구역</text>
+        <text x="232" y="181" text-anchor="middle" font-size="11" fill="#633806">중앙 서쪽 · 남향</text>
+        <text x="232" y="197" text-anchor="middle" font-size="10" fill="#633806">★★★ 조건부 선택 가능</text>
+        <!-- X구역: 서쪽 저지대 -->
+        <rect x="90" y="72" width="180" height="55" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="1" opacity="0.7"/>
+        <text x="180" y="97" text-anchor="middle" font-size="12" font-weight="500" fill="#4A1B0C">X구역 (회피)</text>
+        <text x="180" y="115" text-anchor="middle" font-size="10" fill="#993C1D">서향 저지대 · 백호과다</text>
+        <!-- 방위 표시 -->
+        <text x="340" y="280" text-anchor="middle" font-size="11" fill="var(--color-text-tertiary)">↑ 남향 · 대청호 방향</text>
+        <!-- 나침반 -->
+        <circle cx="50" cy="180" r="28" fill="var(--color-background-secondary)" stroke="var(--color-border-secondary)" stroke-width="0.5"/>
+        <line x1="50" y1="156" x2="50" y2="162" stroke="var(--color-text-secondary)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="50" y1="198" x2="50" y2="204" stroke="var(--color-text-secondary)" stroke-width="1" stroke-linecap="round"/>
+        <line x1="26" y1="180" x2="32" y2="180" stroke="var(--color-text-secondary)" stroke-width="1" stroke-linecap="round"/>
+        <line x1="68" y1="180" x2="74" y2="180" stroke="var(--color-text-secondary)" stroke-width="1" stroke-linecap="round"/>
+        <polygon points="50,153 47,163 53,163" fill="#E24B4A"/>
+        <polygon points="50,207 47,197 53,197" fill="var(--color-text-tertiary)"/>
+        <text x="50" y="152" text-anchor="middle" font-size="10" fill="#E24B4A">N</text>
+        <text x="50" y="218" text-anchor="middle" font-size="10" fill="var(--color-text-secondary)">S</text>
+        <text x="17" y="184" text-anchor="middle" font-size="10" fill="var(--color-text-secondary)">W</text>
+        <text x="78" y="184" text-anchor="middle" font-size="10" fill="#3B6D11">E</text>
+      </svg>
+    </div>
+
+    <div class="card">
+      <div class="section-title">구역별 상세 평가</div>
+      <ul class="zone-list">
+        <li>
+          <span class="zone-badge badge-a">A구역 ★★★★★</span>
+          <div><strong style="color:var(--color-text-primary);font-weight:500">북동 고지대 · 동남향 필지</strong> — 현무(환산)가 든든하고 동쪽 청룡 활성화. 木기운이 동쪽에서 직입. 대청호 조망으로 水기운도 보충. 두 분 모두 희용신 木·水를 동시 흡수. 단지 내에서 가장 조망이 좋은 고지대. 특히 일련번호 기준 단지 북동쪽 모서리 인접 필지를 우선 검토하세요.</div>
+        </li>
+        <li>
+          <span class="zone-badge badge-b">B구역 ★★★★</span>
+          <div><strong style="color:var(--color-text-primary);font-weight:500">중앙 동쪽 · 남향 필지</strong> — 배산임수 조건 충족. 단지 중앙이라 공용시설 접근성 좋음. 동쪽 청룡에서 木기운 입수 가능. A구역 보다 고도가 낮아 조망 열위지만 실용성 높음.</div>
+        </li>
+        <li>
+          <span class="zone-badge badge-c">C구역 ★★★</span>
+          <div><strong style="color:var(--color-text-primary);font-weight:500">중앙 서쪽 · 남향 필지</strong> — 남향 조건 충족. 단, 서쪽 백호가 강해지면 金기운 가중(두 분 기신). 木기운 입수가 제한적. 조경·정원 동쪽 배치로 보완 가능.</div>
+        </li>
+        <li>
+          <span class="zone-badge badge-x">X구역 ✗ 회피</span>
+          <div><strong style="color:#993C1D;font-weight:500">서향 저지대 필지</strong> — 서향은 金기운 극대화(부부 공통 기신). 저지대는 습기·음기 집적. 두 분 사주 오행상 가장 불리한 조합. 강력히 비추천.</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 집터 가이드 탭 -->
+  <div id="panel-house" class="panel">
+    <div class="card">
+      <div class="section-title">ㄴ자형 주택 배치 가이드 (본채 60평 + 별채 20평)</div>
+      <svg width="100%" viewBox="0 0 680 300">
+        <defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+        <!-- 대지 테두리 -->
+        <rect x="60" y="30" width="340" height="240" rx="8" fill="var(--color-background-secondary)" stroke="var(--color-border-secondary)" stroke-width="0.5"/>
+        <!-- 북쪽 표시 -->
+        <text x="230" y="25" text-anchor="middle" font-size="11" fill="#27500A">← 북 (환산 방향) →</text>
+        <!-- 남쪽 표시 -->
+        <text x="230" y="285" text-anchor="middle" font-size="11" fill="#185FA5">← 남 (대청호 방향) →</text>
+        <!-- 본채 (ㄴ자 가로 부분) -->
+        <rect x="90" y="55" width="200" height="90" rx="6" fill="#EAF3DE" stroke="#639922" stroke-width="1"/>
+        <text x="190" y="97" text-anchor="middle" font-size="13" font-weight="500" fill="#27500A">본채 (60평)</text>
+        <text x="190" y="115" text-anchor="middle" font-size="10" fill="#3B6D11">북쪽 배치 · 남향</text>
+        <!-- 본채 (ㄴ자 세로 부분) -->
+        <rect x="90" y="145" width="90" height="80" rx="6" fill="#EAF3DE" stroke="#639922" stroke-width="1"/>
+        <text x="135" y="190" text-anchor="middle" font-size="11" fill="#27500A">본채 연장</text>
+        <!-- 별채 -->
+        <rect x="215" y="165" width="110" height="70" rx="6" fill="#E6F1FB" stroke="#378ADD" stroke-width="1"/>
+        <text x="270" y="198" text-anchor="middle" font-size="12" font-weight="500" fill="#0C447C">별채 (20평)</text>
+        <text x="270" y="213" text-anchor="middle" font-size="10" fill="#185FA5">동남쪽 배치</text>
+        <!-- 정원 (동쪽) -->
+        <rect x="340" y="55" width="42" height="160" rx="4" fill="#C0DD97" stroke="#639922" stroke-width="0.5" opacity="0.8"/>
+        <text x="361" y="140" text-anchor="middle" font-size="10" fill="#27500A" transform="rotate(-90, 361, 140)">동쪽 정원·나무</text>
+        <!-- 마당 -->
+        <rect x="185" y="232" width="170" height="28" rx="4" fill="var(--color-background-primary)" stroke="var(--color-border-tertiary)" stroke-width="0.5"/>
+        <text x="270" y="250" text-anchor="middle" font-size="11" fill="var(--color-text-secondary)">남쪽 마당 · 대청호 조망</text>
+        <!-- 방위 화살표 -->
+        <line x1="490" y1="150" x2="490" y2="80" stroke="#E24B4A" stroke-width="1.5" marker-end="url(#arrow)"/>
+        <text x="490" y="75" text-anchor="middle" font-size="11" fill="#E24B4A">N</text>
+        <!-- 레전드 -->
+        <rect x="490" y="100" width="12" height="10" rx="2" fill="#EAF3DE" stroke="#639922" stroke-width="0.5"/>
+        <text x="508" y="110" font-size="11" fill="var(--color-text-secondary)">본채</text>
+        <rect x="490" y="118" width="12" height="10" rx="2" fill="#E6F1FB" stroke="#378ADD" stroke-width="0.5"/>
+        <text x="508" y="128" font-size="11" fill="var(--color-text-secondary)">별채</text>
+        <rect x="490" y="136" width="12" height="10" rx="2" fill="#C0DD97" stroke="#639922" stroke-width="0.5"/>
+        <text x="508" y="146" font-size="11" fill="var(--color-text-secondary)">정원</text>
+        <!-- 대문 방향 -->
+        <line x1="270" y1="270" x2="270" y2="290" stroke="#185FA5" stroke-width="2" marker-end="url(#arrow)" stroke-dasharray="3 2"/>
+        <text x="270" y="305" text-anchor="middle" font-size="11" fill="#185FA5">대문</text>
+      </svg>
+    </div>
+
+    <div class="card">
+      <div class="section-title">좌향(坐向) 추천 순위</div>
+      <div class="stat-grid">
+        <div class="stat" style="background:#EAF3DE;border:0.5px solid #C0DD97">
+          <div class="s-label" style="color:#3B6D11">1순위</div>
+          <div class="s-val" style="color:#27500A;font-size:15px">壬坐丙向</div>
+          <div style="font-size:11px;color:#3B6D11;margin-top:3px">정북에서 정남 — 배산임수 정석</div>
+        </div>
+        <div class="stat" style="background:#E6F1FB;border:0.5px solid #B5D4F4">
+          <div class="s-label" style="color:#185FA5">2순위</div>
+          <div class="s-val" style="color:#0C447C;font-size:15px">亥坐巳向</div>
+          <div style="font-size:11px;color:#185FA5;margin-top:3px">북북서→남남동 — 대청호 최대 조망</div>
+        </div>
+        <div class="stat" style="background:#FAEEDA;border:0.5px solid #FAC775">
+          <div class="s-label" style="color:#BA7517">3순위</div>
+          <div class="s-val" style="color:#412402;font-size:15px">甲坐庚向</div>
+          <div style="font-size:11px;color:#633806;margin-top:3px">정동에서 정서 — 木기운 직수입</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">실내 배치 풍수 팁</div>
+      <ul class="zone-list">
+        <li><span class="zone-badge" style="background:#EAF3DE;color:#27500A">안방</span><div class="house-tip">본채 동쪽 또는 동남쪽 — <strong>木기운 직접 흡수</strong>. 아버지(丙火)·어머니(己土) 모두 일간 보강에 최적. 창문은 동쪽으로 내 아침 햇살 유입.</div></li>
+        <li><span class="zone-badge" style="background:#FAEEDA;color:#412402">대문</span><div class="house-tip">남쪽 또는 동남쪽 — 주작(대청호) 방향. 水기운 유입으로 재물·건강 보완. 대문 앞 <strong>소나무·은행나무</strong> 심으면 木기운 가중 효과.</div></li>
+        <li><span class="zone-badge" style="background:#E6F1FB;color:#0C447C">별채</span><div class="house-tip">동남쪽 ㄴ자 오픈 공간 배치 — 단지 東쪽 방면에서 오는 木기운이 본채·별채 사이 공간으로 모임. 아늑한 中庭(안마당) 효과.</div></li>
+        <li><span class="zone-badge" style="background:#EAF3DE;color:#27500A">정원</span><div class="house-tip">동쪽 울타리 안쪽에 <strong>활엽수·대나무·향나무</strong> 식재 권장. 나무 자체가 木기운원. 서쪽 정원보다 동쪽 정원 우선 가꾸기.</div></li>
+        <li><span class="zone-badge" style="background:var(--color-background-secondary);color:var(--color-text-secondary)">피할 것</span><div class="house-tip">서쪽 방향 큰 창·대문 최소화 (金기운 가중). 단지 서쪽 경계 필지는 비추천. 지하층 과다 굴착 시 土기운 과잉 가중 주의.</div></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
